@@ -6,3 +6,6 @@ To get started, create a repository based on this template or download a zipped 
 
 See our [wiki](https://github.com/RebUnderwood/Narrare/wiki) for more information on how to use Narrāre.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/RebUnderwood/Narrare/main/narrare_screenshot.jpg" width="480px" height="270px">
+</p>
