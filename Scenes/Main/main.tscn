@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3 uid="uid://dnhdxkivwfu8v"]
+
+[ext_resource type="Script" uid="uid://dk3uenygqost6" path="res://Scenes/Main/main.gd" id="1_p6jpk"]
+[ext_resource type="PackedScene" uid="uid://4npa5poqhdvt" path="res://Scenes/Interface/interface.tscn" id="2_2a143"]
+[ext_resource type="Script" uid="uid://wv2nu42wmy7l" path="res://Narrāre Core/Classes/Map.gd" id="3_xlvfx"]
+[ext_resource type="Script" uid="uid://brf6yqjtycqg8" path="res://Scenes/Rooms/left_room.gd" id="4_y3v7k"]
+[ext_resource type="Script" uid="uid://bfgpn7483aoto" path="res://Scenes/Rooms/right_room.gd" id="5_hryqi"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_p6jpk")
+
+[node name="Interface" parent="." instance=ExtResource("2_2a143")]
+layout_mode = 1
+use_typewriter_effect = null
+command_history_max_length = null
+
+[node name="Map" type="Node" parent="." node_paths=PackedStringArray("current_room")]
+script = ExtResource("3_xlvfx")
+current_room = NodePath("LeftRoom")
+metadata/_custom_type_script = "uid://wv2nu42wmy7l"
+
+[node name="LeftRoom" type="Node" parent="Map" node_paths=PackedStringArray("exit_west")]
+script = ExtResource("4_y3v7k")
+exit_west = NodePath("../RightRoom")
+enter_west_text = "You leave the Right Room, shutting the door behind you."
+entry_description = "You are now in the Left Room."
+room_name = "Left Room"
+look_description = "A door to the west leads to the Right Room."
+metadata/_custom_type_script = "uid://d1rokgjdf77ft"
+
+[node name="RightRoom" type="Node" parent="Map" node_paths=PackedStringArray("exit_east")]
+script = ExtResource("5_hryqi")
+exit_east = NodePath("../LeftRoom")
+enter_east_text = "You leave the Left Room, shutting the door behind you."
+entry_description = "You are now in the Right Room."
+room_name = "Right Room"
+look_description = "There is a [lamp] on the table.A door to the east leads to the Left Room."
+metadata/_custom_type_script = "uid://d1rokgjdf77ft"
+
+[connection signal="command_inputted" from="Interface" to="." method="_on_interface_command_inputted"]

@@ -1,0 +1,58 @@
+[gd_resource type="Theme" load_steps=12 format=3 uid="uid://dwt8vsu0pcwta"]
+
+[ext_resource type="FontFile" uid="uid://c57pp4wcq7e0u" path="res://Assets/Fonts/Space_Mono/SpaceMono-Bold.ttf" id="1_km7t0"]
+[ext_resource type="FontFile" uid="uid://b14gc0hpal0la" path="res://Assets/Fonts/Space_Mono/SpaceMono-BoldItalic.ttf" id="2_lo7la"]
+[ext_resource type="FontFile" uid="uid://1e8jqscusu5q" path="res://Assets/Fonts/Space_Mono/SpaceMono-Italic.ttf" id="3_auwvd"]
+[ext_resource type="FontFile" uid="uid://gtwgry3r0fuo" path="res://Assets/Fonts/Space_Mono/SpaceMono-Regular.ttf" id="4_vb07h"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fljde"]
+content_margin_left = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dqlc5"]
+content_margin_left = 18.0
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.13333334, 0.13333334, 0.13333334, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lo7la"]
+content_margin_left = 18.0
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.13333334, 0.13333334, 0.13333334, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_auwvd"]
+content_margin_left = 18.0
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.13333334, 0.13333334, 0.13333334, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_km7t0"]
+bg_color = Color(0.18039216, 0.18039216, 0.18039216, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fljde"]
+bg_color = Color(0.18039216, 0.18039216, 0.18039216, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dqlc5"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+
+[resource]
+Label/fonts/font = ExtResource("4_vb07h")
+Label/styles/normal = SubResource("StyleBoxEmpty_fljde")
+LineEdit/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+LineEdit/colors/font_uneditable_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+LineEdit/fonts/font = ExtResource("4_vb07h")
+LineEdit/styles/focus = SubResource("StyleBoxFlat_dqlc5")
+LineEdit/styles/normal = SubResource("StyleBoxFlat_lo7la")
+LineEdit/styles/read_only = SubResource("StyleBoxFlat_auwvd")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_km7t0")
+RichTextLabel/colors/selection_color = Color(0.5609549, 0.5609549, 0.5609549, 0.8)
+RichTextLabel/fonts/bold_font = ExtResource("1_km7t0")
+RichTextLabel/fonts/bold_italics_font = ExtResource("2_lo7la")
+RichTextLabel/fonts/italics_font = ExtResource("3_auwvd")
+RichTextLabel/fonts/mono_font = ExtResource("4_vb07h")
+RichTextLabel/fonts/normal_font = ExtResource("4_vb07h")
+RichTextLabel/styles/focus = SubResource("StyleBoxFlat_fljde")
+RichTextLabel/styles/normal = SubResource("StyleBoxEmpty_dqlc5")

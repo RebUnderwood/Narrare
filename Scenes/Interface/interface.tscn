@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3 uid="uid://4npa5poqhdvt"]
+
+[ext_resource type="Script" uid="uid://g804pwf2hp6p" path="res://Scenes/Interface/interface.gd" id="1_j00uw"]
+[ext_resource type="Theme" uid="uid://dwt8vsu0pcwta" path="res://Themes/interface.tres" id="5_dukh4"]
+
+[node name="Interface" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("5_dukh4")
+script = ExtResource("1_j00uw")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="TextOutput" type="RichTextLabel" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 2
+theme = ExtResource("5_dukh4")
+bbcode_enabled = true
+scroll_following = true
+selection_enabled = true
+visible_characters = 0
+
+[node name="CommandInput" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_dukh4")
+placeholder_text = "Type 'help' for a list of commands."
+keep_editing_on_text_submit = true
+context_menu_enabled = false
+deselect_on_focus_loss_enabled = false
+caret_blink = true
+
+[node name="Label" type="Label" parent="VBoxContainer/CommandInput"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 1.0
+grow_vertical = 2
+theme = ExtResource("5_dukh4")
+text = ">"
+vertical_alignment = 1
+
+[connection signal="text_submitted" from="VBoxContainer/CommandInput" to="." method="_on_command_input_text_submitted"]
