@@ -6,15 +6,20 @@ var command_stack: Array[Command] = [];
 func parse_command(input_string: String) -> String:
 	var out: String = "[color=gray]> %s[/color]\n\n" % input_string;
 	input_string = input_string.lstrip(" \t").rstrip(" \t")
-	var interactables: Dictionary = {};
+	var interactables: InteractablesInterface = InteractablesInterface.new();
 	for interactable_name in Narrare.map.current_room.interactables:
 		var interactable = Interactables.get_interactable(interactable_name);
+		
 		if interactable != null:
-			interactables[interactable_name] = interactable;
+			interactables.add_interactable(interactable);
+		else:
+			var room_interactable = Narrare.map.current_room.room_interactables.get_interactable(interactable_name);
+			if room_interactable != null:
+				interactables.add_interactable(room_interactable);
 	for interactable_name in Narrare.player_inventory:
 		var interactable = Interactables.get_interactable(interactable_name);
 		if interactable != null:
-			interactables[interactable_name] = interactable;
+			interactables.add_interactable(interactable);
 	# Prompts
 	if Narrare.current_prompt != null:
 		if !input_string.is_valid_int():

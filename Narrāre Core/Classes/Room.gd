@@ -29,6 +29,8 @@ class_name Room
 @export var look_description: String = "";
 @export var interactables: Array[String] = [];
 
+var room_interactables: InteractablesInterface = InteractablesInterface.new();
+
 func get_room_in_direction(direction: Narrare.Direction) -> Room:
 	match direction:
 		Narrare.Direction.NORTH:

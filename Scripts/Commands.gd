@@ -113,7 +113,7 @@ var then_callable: Callable = (
 var then_command = Command.new("(?'first_command'.+) then (?'second_command'.+)", then_callable);
 
 var look_callable: Callable = (
-	func(interactables: Dictionary, matches: RegExMatch) -> String: 
+	func(interactables: InteractablesInterface, matches: RegExMatch) -> String: 
 		var out: String = ""
 		var at_object: String = matches.get_string("at_group");
 		if at_object.is_empty():
@@ -123,20 +123,18 @@ var look_callable: Callable = (
 			else:
 				out = "Look at what?";
 		else:
-			if interactables.has(at_object):
-				if interactables[at_object].has("look"):
-					out = interactables[at_object].look.call();
-					Narrare.previous_text_displayed = out;
-				else:
-					out = "You're not sure what you're looking at.";
+			var result: Variant = interactables.attempt_interaction(at_object, "look");
+			if result == null:
+				out = "You're not sure what you're looking at."
 			else:
-				out = "No object '" + at_object +"' around to look at.";
+				out = result;
+				Narrare.previous_text_displayed = out;
 		return out;
 		);
 var look_command = Command.new("^look(?: (?'has_at'at))?(?: (?'at_group'[\\w ]+))?", look_callable);
 
 var go_callable: Callable = (
-	func(_interactables: Dictionary, matches: RegExMatch) -> String:
+	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String:
 		var out: String = "";
 		var direction_string: String = matches.get_string("direction_group");
 		if direction_string.is_empty():
@@ -172,26 +170,24 @@ var go_command = Command.new("^go ?(?'direction_group'[\\w]+)?", go_callable);
 
 
 var take_callable: Callable = (
-	func(interactables: Dictionary, matches: RegExMatch) -> String: 
+	func(interactables: InteractablesInterface, matches: RegExMatch) -> String: 
 		var out: String = ""
 		var take_object: String = matches.get_string("take_group");
 		if take_object.is_empty():
 			out = "Take what?";
 		else:
-			if interactables.has(take_object):
-				if interactables[take_object].has("take"):
-					out = interactables[take_object].take.call();
-					Narrare.previous_text_displayed = out;
-				else:
-					out = "You can't take that.";
+			var result: Variant = interactables.attempt_interaction(take_object, "take");
+			if result == null:
+				out = "You're not sure how to take that."
 			else:
-				out = "No object '" + take_object +"' around to take.";
+				out = result;
+				Narrare.previous_text_displayed = out;
 		return out;
 		);
 var take_command = Command.new("^take(?: (?'take_group'[\\w ]+))?", take_callable);
 
 var use_callable: Callable = (
-	func(interactables: Dictionary, matches: RegExMatch) -> String: 
+	func(interactables: InteractablesInterface, matches: RegExMatch) -> String: 
 		var out: String = ""
 		var has_on: bool = !matches.get_string("has_on").is_empty();
 		if has_on:
@@ -199,36 +195,33 @@ var use_callable: Callable = (
 			var on_object: String = matches.get_string("on_group");
 			if on_object.is_empty():
 				out = "Use " + use_object + " on what?";
+			elif interactables.get_interactable(on_object) == null:
+				out = "No '%s' to use that on." % on_object;
 			else:
-				if interactables.has(on_object):
-					if interactables[on_object].has("use"):
-						if !use_object.is_empty() && !interactables.has(use_object):
-							out ="No object '" + on_object +"' around to use the [" + use_object + "] on.";
-						else:
-							out = interactables[use_object].use.call(on_object);
-							Narrare.previous_text_displayed = out;
-					else:
-						out = "You're not sure how to use that.";
+				var result: Variant = interactables.attempt_interaction(use_object, "use", on_object);
+				if result == null:
+					out = "You're not sure how to use that on that."
+				else:
+					out = result;
+					Narrare.previous_text_displayed = out;
 		else:
 			var use_single_object: String = matches.get_string("use_single_group");
 			if use_single_object.is_empty():
 				out = "Use what?";
 			else:
-				if interactables.has(use_single_object):
-					if interactables[use_single_object].has("use"):
-						out = interactables[use_single_object].use.call("");
-						Narrare.previous_text_displayed = out;
-					else:
-						out = "You're not sure how to use that.";
-				else: 
-					out ="No object '" + use_single_object +"' around to use.";
+				var result: Variant = interactables.attempt_interaction(use_single_object, "use", "");
+				if result == null:
+					out = "You're not sure how to use that."
+				else:
+					out = result;
+					Narrare.previous_text_displayed = out;
 		return out;
 		);
 		
 var use_command = Command.new("^use (?'use_group'[ \\w]+)(?'has_on' on ?)(?'on_group'[ \\w]+)?|use ?(?'use_single_group'[ \\w]+)?", use_callable);
 
 var say_callable: Callable = (
-	func(interactables: Dictionary, matches: RegExMatch) -> String:
+	func(interactables: InteractablesInterface, matches: RegExMatch) -> String:
 		var out: String = ""
 		var say_phrase: String = matches.get_string("phrase_group");
 		if say_phrase.is_empty():
@@ -236,10 +229,10 @@ var say_callable: Callable = (
 		else:
 			out = "You say, \"%s\".\n\n" % say_phrase;
 			var response_flag: bool = false;
-			for key in interactables.keys():
-				var interactable: Dictionary = interactables[key];
-				if interactable.has("say"):
-					out += interactable.say.call(say_phrase) + "\n\n";
+			for interactable in interactables.get_all_interactables():
+				var result = interactable.attempt_interaction("say", [say_phrase]);
+				if result != null:
+					out += result + "\n\n";
 					response_flag = true;
 			if !response_flag:
 				out += "No response."
@@ -248,7 +241,7 @@ var say_callable: Callable = (
 var say_command = Command.new("^say ?(?'phrase_group'.+)?", say_callable);
 
 var inventory_callable: Callable = (
-	func(_interactables: Dictionary, _matches: RegExMatch) -> String:
+	func(_interactables: InteractablesInterface, _matches: RegExMatch) -> String:
 		var out = "---------------------[b]INVENTORY[/b]-------------------\n"
 		var items = Narrare.player_inventory;
 		if !items.is_empty():
@@ -262,7 +255,7 @@ var inventory_callable: Callable = (
 var inventory_command = Command.new("inventory", inventory_callable);
 
 var save_callable: Callable = (
-	func(_interactables: Dictionary, matches: RegExMatch) -> String:
+	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String:
 		var result: int = -1;
 		var save_name: String = matches.get_string("save_name");
 		if save_name.is_empty():
@@ -276,7 +269,7 @@ var save_callable: Callable = (
 var save_command = Command.new("^save ?(?'save_name'[\\w ]+)?", save_callable);
 
 var load_callable: Callable = (
-	func(_interactables: Dictionary, matches: RegExMatch) -> String:
+	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String:
 		var out: String = "";
 		var load_num = matches.get_string("load_number");
 		if load_num.is_empty():
@@ -322,7 +315,7 @@ var load_callable: Callable = (
 var load_command = Command.new("^load ?(?'load_number'[\\w]+)?", load_callable);
 
 var help_callable: Callable = (
-	func(_interactables: Dictionary, _matches: RegExMatch) -> String:
+	func(_interactables: InteractablesInterface, _matches: RegExMatch) -> String:
 		return HELP_TEXT;
 );
 var help_command = Command.new("^help", help_callable);
