@@ -18,12 +18,12 @@ extends CommandsBase
 # The second argument to Command.new() is a Callable. The Callable
 # should take two arguments and return a String: 
 #
-#	func(interactables: Dictionary, matches: RegExMatch) -> String:
+#	func(interactables: InteractablesInterface, matches: RegExMatch) -> String:
 #
 # The returned String is what will be shown to the player after the 
 # command is executed.
 #
-# 'interactables' is a Dictionary containing all the interactables in
+# 'interactables' is an InteractablesInterface containing all the interactables in
 # the current room and the player's inventory, i.e. all the available
 # ones. For more on interactables, see Interactables.gd.
 #
@@ -98,7 +98,7 @@ const HELP_TEXT: String = (
 );
 
 var then_callable: Callable = (
-	func(_interactables: Dictionary, matches: RegExMatch) -> String:
+	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String:
 		var out: String = "";
 		var command_one = matches.get_string("first_command");
 		var command_two = matches.get_string("second_command");

@@ -1,37 +1,34 @@
 extends InteractablesInterface
 
 # === INTERACTABLES ===
-# The Dictionary variable objs is used to store all of your game's
-# interactables. Interactables are anything in your game that can be
-# interacted with. This includes things like takeable items, things
-# in a Room that can be looked at in more detail, people that can
-# be conversed with, etc. If you can use a command on it, it's an
-# interactable.
 #
-# Interactables should themselves be dictionaries. The name of the
-# key in objs should be identical to the name of the interactable
-# as it appears in game, i.e. if you have an interactable [deck of cards]
-# it should appear in objs as "deck of cards": {}.
+# This script should be used to house any Interactables that 
+# need to be accessed across rooms, i.e. Interactables that 
+# are in multiple rooms or Interactables that can be added to
+# the player's inventory. For Room-specific Interactables, 
+# use that room's room_interactables property.
 #
-# Interaction methods can be defined as entries in the interactable's
-# Dictionary as Callables. These Callables must always return a string;
-# this string is what gets shown to the player.
+# Interactables should be Interactable objects constructed with 
+# Interactable.new(<identifier>). See the Interactable class for
+# more info. You can add an array of Interactables to this script 
+# using add_interactables([<my_interactables>]), or individual
+# Interactables using add_interactable(<my_interactable>).
 #
-# When a command is executed, it should get the relevant callable 
-# and execute it. For example, if I had a command 'shuffle', and
-# it is used on [deck of cards], the shuffle command should find
-# a corresponding 'shuffle' entry in the 'deck of cards' entry in
-# objs and execute that Callable. More on commands can be found 
-# in the Commands.gd script.
+# To retrieve Interactables from this script from anywhere in 
+# the project, you can use Interactables.get_interactable(<identifier>).
+# To retrieve an array of all the Interactables, you can use
+# Interactables.get_all_interactables().
 #
-# This script is a global, and can be accessed with 'Interactables'.
-# However, you should never need to interact with objs directly;
-# instead, you should get interactables by name using 
-# Interactables.get_interactable("interactable name"). Because
-# interactables are accessed by name, you should ensure that no two
-# interactables have the same name.
+# Interactables in this script will override Interactables with
+# the same identifier in a Room's room_interactables property.
 #
-# You should overwrite objs in this script's _ready() function.
+# Interactables should be given identifiers that match the name
+# of the object shown to the player, i.e. what they should type
+# into the console to interact with that Interactable. Additionally,
+# and this is *very* important, ALL INTERACTABLES IN THIS FILE
+# (or in an individual Room's room_interactables property) MUST
+# HAVE UNIQUE IDENTIFIERS. If they do not, the earlier Interactable
+# will be overwritten.
 
 var screwdriver = Interactable.new("screwdriver")\
 	.add_interaction("look", func () -> String: return "It's a plain phillips head screwdriver.")\
@@ -59,8 +56,6 @@ var screwdriver = Interactable.new("screwdriver")\
 			else:
 				return "You already took the screwdriver.";
 			));
-
-
 
 func _ready() -> void:
 	add_interactables([
