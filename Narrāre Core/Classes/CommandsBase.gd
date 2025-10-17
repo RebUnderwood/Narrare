@@ -50,3 +50,6 @@ func parse_command(input_string: String) -> String:
 				return out;
 		out += "Unrecognized command. Type 'help' for a list of available commands.";
 	return out;
+
+func set_command_stack(in_stack: Array[Command]) -> void:
+	command_stack = in_stack;

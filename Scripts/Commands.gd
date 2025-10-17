@@ -37,9 +37,11 @@ extends CommandsBase
 # the specified pattern within the Callable; this check is done by 
 # Narrāre and the Callable is only executed if there is a match.
 #
-# Once you have defined all your callables, they must be added to the 
-# command_stack array variable. This should be done in this script's _ready()
-# function. When a command is recieved, Narrāre will go through the
+# Once you have defined all your Commands, they must be added to the 
+# the command stack with set_command_stack(in_stack: Array[Command]). 
+# This should be done in this script's _ready() function. 
+#
+# When a command is recieved, Narrāre will go through the
 # command_stack in order and check if there is a match to that Command's
 # regular expression pattern. If there is a match, it will stop there
 # and execute that Command's Callable. Because of this, *the order
@@ -54,12 +56,12 @@ extends CommandsBase
 # To get the correct behaviour, we would want to have 'then' before
 # 'go' in the command_stack, because in that case 'then' is matched
 # first and can then execute the two 'go's correctly.
-
+#
 # This script is a global and can be accessed using 'Commands'.
 # To parse a command, use 'Commands.parse_command(input_string)'.
 
 func _ready() -> void:
-	command_stack = [
+	set_command_stack([
 		then_command,
 		look_command,
 		go_command,
@@ -70,7 +72,8 @@ func _ready() -> void:
 		save_command,
 		load_command,
 		help_command,
-	];
+		quit_command,
+	]);
 	
 const HELP_TEXT: String = (
 	"----------------------------[b]HELP[/b]----------------------------\n" 
@@ -94,6 +97,7 @@ const HELP_TEXT: String = (
 	+ "- save {<save name>}\n"
 	+ "- load {<save number>}\n"
 	+ "- help\n"
+	+ "- quit\n"
 	+ "------------------------------------------------------------"
 );
 
@@ -289,8 +293,7 @@ var load_callable: Callable = (
 					var unsaved_prompt_question: String = "You have unsaved data which will be lost. Are you sure you want to load this save?";
 					var unsaved_prompt_options: Array[String] = ["Yes, load my game.", "No, go back."];
 					var unsaved_prompt_callables: Array[Callable] = [
-						(
-							func()-> String:
+						(func()-> String:
 								var result_dict: Dictionary = Narrare.load_save(load_num);
 								var res_out: String = "";
 								match result_dict.err:
@@ -319,3 +322,21 @@ var help_callable: Callable = (
 		return HELP_TEXT;
 );
 var help_command = Command.new("^help", help_callable);
+
+var quit_callable: Callable = (
+	func(_interactables: InteractablesInterface, _matches: RegExMatch) -> String:
+		var unsaved_prompt_question: String = "You have unsaved data which will be lost. Are you sure you want to quit the game?";
+		var unsaved_prompt_options: Array[String] = ["Yes, quit the game.", "No, go back."];
+		var unsaved_prompt_callables: Array[Callable] = [
+			(func()-> String:
+				get_tree().quit();
+				return "Quitting.";
+				),
+			(func() -> String: 
+				return "Quit canceled.";
+				),
+		];
+		Narrare.current_prompt = Prompt.new(unsaved_prompt_question, unsaved_prompt_options, unsaved_prompt_callables);
+		return Narrare.current_prompt.get_display_string();
+);
+var quit_command = Command.new("^quit", quit_callable);
