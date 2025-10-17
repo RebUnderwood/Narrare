@@ -8,7 +8,6 @@ extends Control
 func _ready() -> void:
 	Narrare.say_something.connect(_on_something_says);
 	Narrare.clear_output.connect(_on_clear_requested);
-	Narrare.map = map;
 	var name_input_request_question: String = "Enter your name:";
 	var name_input_request_callable: Callable = (
 		func(in_input) -> String:

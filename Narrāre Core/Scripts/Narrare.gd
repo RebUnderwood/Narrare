@@ -28,6 +28,9 @@ func say(message: String) -> void:
 	
 func clear() -> void:
 	clear_output.emit();
+	
+func set_map(in_map: Map) -> void:
+	map = in_map;
 
 # === Saving and Loading ===
 func save(save_name: String = "-----") -> int:
@@ -102,7 +105,7 @@ func load_save(save_number: String) -> Dictionary:
 				var save_data = json.data;
 				if !save_data.has("data") || !save_data.has("save_name") || !save_data.has("current_room"):
 					return {"err": ERR_INVALID_DATA, "out": out_str};
-				if map.set_current_room(save_data.current_room) != OK:
+				if map.set_current_room_by_name(save_data.current_room) != OK:
 					return {"err": ERR_INVALID_DATA, "out": out_str};
 				Data.from_dict(save_data.data);
 				
