@@ -290,26 +290,22 @@ var load_callable: Callable = (
 						OK:
 							out = result_dict.out;
 				else:
-					var unsaved_prompt_question: String = "You have unsaved data which will be lost. Are you sure you want to load this save?";
-					var unsaved_prompt_options: Array[String] = ["Yes, load my game.", "No, go back."];
-					var unsaved_prompt_callables: Array[Callable] = [
-						(func()-> String:
-								var result_dict: Dictionary = Narrare.load_save(load_num);
-								var res_out: String = "";
-								match result_dict.err:
-									FAILED:
-										res_out = "There are no saves to load.";
-									ERR_INVALID_DATA:
-										res_out = "Something was wrong with that save. It may be malformed or corrupted.";
-									OK:
-										res_out = result_dict.out;
-								return res_out;
-								),
-						(func() -> String: 
+					Narrare.current_prompt = Prompt.new("You have unsaved data which will be lost. Are you sure you want to load this save?")\
+						.add_option("Yes, load my game.",(func()-> String:
+							var result_dict: Dictionary = Narrare.load_save(load_num);
+							var res_out: String = "";
+							match result_dict.err:
+								FAILED:
+									res_out = "There are no saves to load.";
+								ERR_INVALID_DATA:
+									res_out = "Something was wrong with that save. It may be malformed or corrupted.";
+								OK:
+									res_out = result_dict.out;
+							return res_out;
+							))\
+						.add_option("No, go back.", (func() -> String: 
 							return "Load canceled.";
-							),
-					];
-					Narrare.current_prompt = Prompt.new(unsaved_prompt_question, unsaved_prompt_options, unsaved_prompt_callables);
+							));
 					out = Narrare.current_prompt.get_display_string();
 			else:
 				out = "Save number was not a valid integer.";
@@ -325,18 +321,14 @@ var help_command = Command.new("^help", help_callable);
 
 var quit_callable: Callable = (
 	func(_interactables: InteractablesInterface, _matches: RegExMatch) -> String:
-		var unsaved_prompt_question: String = "You have unsaved data which will be lost. Are you sure you want to quit the game?";
-		var unsaved_prompt_options: Array[String] = ["Yes, quit the game.", "No, go back."];
-		var unsaved_prompt_callables: Array[Callable] = [
-			(func()-> String:
+		Narrare.current_prompt = Prompt.new("You have unsaved data which will be lost. Are you sure you want to quit the game?")\
+			.add_option("Yes, quit the game.", (func()-> String:
 				get_tree().quit();
 				return "Quitting.";
-				),
-			(func() -> String: 
+				))\
+			.add_option("No, go back.", (func() -> String: 
 				return "Quit canceled.";
-				),
-		];
-		Narrare.current_prompt = Prompt.new(unsaved_prompt_question, unsaved_prompt_options, unsaved_prompt_callables);
+				))
 		return Narrare.current_prompt.get_display_string();
 );
 var quit_command = Command.new("^quit", quit_callable);
