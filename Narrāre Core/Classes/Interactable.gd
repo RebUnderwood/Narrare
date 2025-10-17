@@ -1,8 +1,8 @@
 extends Node
 class_name Interactable
 
-var identifier: String;
-var interactions: Dictionary = {}
+@export var identifier: String;
+@export var interactions: Dictionary[String, Callable] = {}
 
 func _init(in_identifier: String) -> void:
 	identifier = in_identifier;

@@ -14,6 +14,7 @@ class_name Room
 @export var exit_down: Room = null;
 
 @export_group("Entrance Text")
+@export var entry_description: String = "";
 @export var enter_north_text: String = "";
 @export var enter_northwest_text: String = "";
 @export var enter_west_text: String = "";
@@ -22,7 +23,8 @@ class_name Room
 @export var enter_southeast_text: String = "";
 @export var enter_east_text: String = "";
 @export var enter_northeast_text: String = "";
-@export var entry_description: String = "";
+@export var enter_up_text: String = "";
+@export var enter_down_text: String = "";
 
 @export_group("Contents")
 @export var room_name: String = "";
@@ -78,6 +80,10 @@ func enter(from: Room) -> String:
 			out += enter_east_text + " ";
 		exit_northeast:
 			out += enter_northeast_text + " ";
+		exit_up:
+			out += enter_up_text + " ";
+		exit_down:
+			out += enter_down_text + " ";
 	if !entry_description.is_empty():
 		out += entry_description + " ";
 	out += look();
