@@ -51,7 +51,7 @@ var screwdriver = Interactable.new("screwdriver")\
 		func() -> String:
 			if !Data.screwdriver_taken:
 				Data.screwdriver_taken = true;
-				Narrare.add_to_inventory("screwdriver");
+				Data.add_to_inventory("screwdriver");
 				return "You pick up the [screwdriver] and slip it into your pocket.";
 			else:
 				return "You already took the screwdriver.";

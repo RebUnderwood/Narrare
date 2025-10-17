@@ -28,8 +28,8 @@ metadata/_custom_type_script = "uid://wv2nu42wmy7l"
 [node name="LeftRoom" type="Node" parent="Map" node_paths=PackedStringArray("exit_west")]
 script = ExtResource("4_y3v7k")
 exit_west = NodePath("../RightRoom")
-enter_west_text = "You leave the Right Room, shutting the door behind you."
 entry_description = "You are now in the Left Room."
+enter_west_text = "You leave the Right Room, shutting the door behind you."
 room_name = "Left Room"
 look_description = "A door to the west leads to the Right Room."
 metadata/_custom_type_script = "uid://d1rokgjdf77ft"
@@ -37,8 +37,8 @@ metadata/_custom_type_script = "uid://d1rokgjdf77ft"
 [node name="RightRoom" type="Node" parent="Map" node_paths=PackedStringArray("exit_east")]
 script = ExtResource("5_hryqi")
 exit_east = NodePath("../LeftRoom")
-enter_east_text = "You leave the Left Room, shutting the door behind you."
 entry_description = "You are now in the Right Room."
+enter_east_text = "You leave the Left Room, shutting the door behind you."
 room_name = "Right Room"
 look_description = "There is a [lamp] on the table.A door to the east leads to the Left Room."
 metadata/_custom_type_script = "uid://d1rokgjdf77ft"

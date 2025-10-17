@@ -16,7 +16,7 @@ func parse_command(input_string: String) -> String:
 			var room_interactable = Narrare.map.current_room.room_interactables.get_interactable(interactable_name);
 			if room_interactable != null:
 				interactables.add_interactable(room_interactable);
-	for interactable_name in Narrare.player_inventory:
+	for interactable_name in Data.player_inventory:
 		var interactable = Interactables.get_interactable(interactable_name);
 		if interactable != null:
 			interactables.add_interactable(interactable);

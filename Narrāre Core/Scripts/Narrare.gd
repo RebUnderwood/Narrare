@@ -11,7 +11,6 @@ signal done_writing_to_input;
 signal prompt_changed(is_prompt: bool);
 signal input_request_changed(is_input_request: bool);
 
-var player_inventory: PackedStringArray;
 var map: Map;
 var previous_text_displayed: String = "";
 var data_saved: bool = true;
@@ -23,12 +22,6 @@ var current_input_request: InputRequest = null:
 	set(val):
 		current_input_request = val;
 		input_request_changed.emit(val != null);
-
-func add_to_inventory(item_name: String) -> void:
-	player_inventory.push_back(item_name);
-	
-func remove_from_inventory(item_name: String) -> bool:
-	return player_inventory.erase(item_name);
 
 func say(message: String) -> void:
 	say_something.emit(message);
@@ -50,7 +43,6 @@ func save(save_name: String = "-----") -> int:
 		"save_time": Time.get_unix_time_from_system(),
 		"current_room": map.current_room.room_name,
 		"previous_text_displayed": previous_text_displayed,
-		"player_inventory": player_inventory,
 		"data": Data.to_dict(),
 	};
 	var json_save: String = JSON.stringify(save_dict);
@@ -108,11 +100,10 @@ func load_save(save_number: String) -> Dictionary:
 					print("JSON Parse Error: ", json.get_error_message(), " at line ", json.get_error_line());
 					return {"err": ERR_INVALID_DATA, "out": out_str};
 				var save_data = json.data;
-				if !save_data.has("player_inventory") || !save_data.has("data") || !save_data.has("save_name") || !save_data.has("current_room"):
+				if !save_data.has("data") || !save_data.has("save_name") || !save_data.has("current_room"):
 					return {"err": ERR_INVALID_DATA, "out": out_str};
 				if map.set_current_room(save_data.current_room) != OK:
 					return {"err": ERR_INVALID_DATA, "out": out_str};
-				player_inventory = save_data.player_inventory;
 				Data.from_dict(save_data.data);
 				
 				out_str = "Loaded save %s: %s\n\n" % [save_number, save_data.save_name.replace_char('-'.unicode_at(0), ' '.unicode_at(0))];

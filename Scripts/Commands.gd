@@ -247,7 +247,7 @@ var say_command = Command.new("^say ?(?'phrase_group'.+)?", say_callable);
 var inventory_callable: Callable = (
 	func(_interactables: InteractablesInterface, _matches: RegExMatch) -> String:
 		var out = "---------------------[b]INVENTORY[/b]-------------------\n"
-		var items = Narrare.player_inventory;
+		var items = Data.get_inventory();
 		if !items.is_empty():
 			for item in items:
 				out += "- [" + item + "]\n"
