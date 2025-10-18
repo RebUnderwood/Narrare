@@ -60,8 +60,21 @@ extends CommandsBase
 # This script is a global and can be accessed using 'Commands'.
 # To parse a command, use 'Commands.parse_command(input_string)'.
 
+var echo_callable: Callable = (
+	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String: 
+		var out: String = ""
+		var echo_phrase: String = matches.get_string("phrase_group");
+		if echo_phrase.is_empty():
+			out = "Echo what?";
+		else:
+			out = echo_phrase;
+		return out;
+		);
+var echo_command = Command.new("^echo ?(?'phrase_group'.+)?", echo_callable);
+
 func _ready() -> void:
 	set_command_stack([
+		echo_command,
 		then_command,
 		look_command,
 		go_command,

@@ -1,0 +1,27 @@
+site_name: Narrāre
+site_description: A Godot-based framework for making text-based adventure games and interactive fiction!
+theme: 
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - godot
+nav:
+  - Home: index.md
+  - Getting Started: getting_started.md
+  - Github: https://github.com/RebUnderwood/Narrare
+  - Documentation:
+    - Scripts:
+      - Commands: documentation/commands.md
+      - Data: documentation/data.md
+      - Interactables: documentation/interactables.md
+    - Core:
+      - Narrare: documentation/narrare_global_script.md
+      - Classes:
+        - Room: documentation/room.md
+        - Map: documentation/map.md
+        - Command: documentation/command.md
+        - Interactable: documentation/interactable.md
+        - InteractablesInterface: documentation/interactablesinterface.md
+        - Prompt: documentation/prompt.md
+        - InputRequest: documentation/inputrequest.md
+

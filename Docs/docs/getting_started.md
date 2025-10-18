@@ -1,0 +1,7 @@
+# Getting Started
+
+Most of Narrāre's internal logic is housed within the Narrāre Core folder. You will probably not need to modify anything in there unless you are making fundamental changes to Narrāre. Exposed to the user are the [Narrare](documentation/narrare_global_script.md) global script, the [Room](documentation/room.md) and [Map](documentation/map.md) classes, and the [Prompt](documentation/prompt.md) and [InputRequest](documentation/inputrequest.md) classes, which will be basic building blocks of your game.
+
+Additionally, in the Root folder of the project is a folder called Scripts. This contains three scripts by default: [Commands](documentation/commands.md), [Data](documentation/data.md), and [Interactables](documentation/interactables.md). These you *should* modify, as they are integral to the logic of your game. Commands defines what commands will be available for the player to use; Data will contain any variables you need to track game state; and Interactables defines all the things within the game that can be interacted with and how.
+
+The template by default has a fully-featured example game in it which you can use for reference or to get started quickly. Feel free to use, change, or remove anything and everything as needed! Experiment! Go wild!
