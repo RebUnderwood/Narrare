@@ -45,11 +45,11 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="" href="https://github.com/RebUnderwood/Narrare">Github</a>
+                <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Getting Started</a>
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Getting Started</a>
+                <li class="toctree-l1"><a class="" href="https://github.com/RebUnderwood/Narrare">Github</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
@@ -58,6 +58,8 @@
     <ul class="current">
                 <li class="toctree-l2 current"><a class="reference internal current" href="#">Commands</a>
     <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#tutorial">Tutorial</a>
+    </li>
     </ul>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../data/">Data</a>
@@ -75,6 +77,12 @@
                 <li class="toctree-l3"><a class="reference internal" href="../room/">Room</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../map/">Map</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../command/">Command</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../interactable/">Interactable</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../interactablesinterface/">InteractablesInterface</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../prompt/">Prompt</a>
                 </li>
@@ -110,7 +118,62 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="tbd">TBD</h1>
+                <h1 id="commands-script">Commands Script</h1>
+<p>The Commands script (Scripts/Commands.gd) is used to define and register your game's commands. Commands are how the player interacts with the game. For example, a common command in many text-based adventure games is some variant of 'go' followed by a cardinal direction, which allows movement between rooms. A number of example commands have been included in this file in the template; feel free to add, remove, or modify them as needed!</p>
+<p>Commands in Narrāre take the form of <a href="../command/">Command</a> objects, which are stored in this script's command stack. The command stack is an <code>Array</code> of <a href="../command/">Command</a>s that, when <a href="commandbase.md#parse_command"><code>Commands.parse_command</code></a> is called, are iterated through in an attempt to match the input from the player against each <a href="../command/">Command</a>'s pattern. When a match is found, <code>parse_command</code> stops and that <a href="../command/">Command</a> is executed.</p>
+<p>Because of this, <em>the order of <a href="../command/">Command</a>s in the command stack is important.</em> For example, a common command is 'then'. 'then' takes two other commands to either side of itself and performs them in sequence, meaning the player can input multiple commands in one step. If 'then' was placed after our previous 'go' command in the command stack then the input command "go east then go west" would only execute 'go east' because it matches the first go command and then stops. To get the correct behaviour, we would want to have 'then' before 'go' in the command stack, because in that case 'then' is matched first and can then execute the two 'go's correctly.</p>
+<p>This script is global and can be accessed using <code>Commands</code>. More information about its methods can be found in the documentation for the <a href="commandsbase.md">CommandsBase</a> class, which this script extends.</p>
+<h2 id="tutorial">Tutorial</h2>
+<p>Let's look at how to add commands. First, we'll crreate two <a href="../command/">Command</a>s: 'look' and 'take':</p>
+<pre><code class="language-gdscript">var look_callable: Callable = (
+    func(interactables: InteractablesInterface, matches: RegExMatch) -&gt; String: 
+        var out: String = &quot;&quot;
+        var at_object: String = matches.get_string(&quot;at_group&quot;);
+        if at_object.is_empty():
+            if matches.get_string(&quot;has_at&quot;).is_empty():
+                out = Narrare.map.get_room_description();
+                Narrare.previous_text_displayed = out;
+            else:
+                out = &quot;Look at what?&quot;;
+        else:
+            var result: Variant = interactables.attempt_interaction(at_object, &quot;look&quot;);
+            if result == null:
+                out = &quot;You're not sure what you're looking at.&quot;
+            else:
+                out = result;
+                Narrare.previous_text_displayed = out;
+        return out;
+        );
+var look_command = Command.new(&quot;^look(?: (?'has_at'at))?(?: (?'at_group'[\\w ]+))?&quot;, look_callable);
+
+var take_callable: Callable = (
+    func(interactables: InteractablesInterface, matches: RegExMatch) -&gt; String: 
+        var out: String = &quot;&quot;
+        var take_object: String = matches.get_string(&quot;take_group&quot;);
+        if take_object.is_empty():
+            out = &quot;Take what?&quot;;
+        else:
+            var result: Variant = interactables.attempt_interaction(take_object, &quot;take&quot;);
+            if result == null:
+                out = &quot;You're not sure how to take that.&quot;
+            else:
+                out = result;
+                Narrare.previous_text_displayed = out;
+        return out;
+        );
+var take_command = Command.new(&quot;^take(?: (?'take_group'[\\w ]+))?&quot;, take_callable);
+</code></pre>
+<p>Now, we can set the command stack. This is done in the Commands script's <code>_ready()</code> function like so:</p>
+<pre><code class="language-gdscript">func _ready() -&gt; void:
+    set_command_stack([
+        look_command,
+        take_command,
+    ]);
+</code></pre>
+<p>And that's it! Now, if we were to call <a href="commandbase.md#parse_command"><code>Commands.parse_command</code></a> like so:</p>
+<pre><code class="language-gdscript">Commands.parse_command(&quot;look at box&quot;);
+</code></pre>
+<p><a href="commandbase.md#parse_command"><code>Commands.parse_command</code></a> will match the 'look' <a href="../command/">Command</a>'s pattern and execute it. Note again that because 'look' comes before 'take' in the command stack, Narrāre will attempt to match to the 'look' command before it tries to match to the 'take' command. Keep this in mind When setting up your stack!</p>
               
             </div>
           </div><footer>

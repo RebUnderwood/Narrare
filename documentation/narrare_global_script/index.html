@@ -45,11 +45,11 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="" href="https://github.com/RebUnderwood/Narrare">Github</a>
+                <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Getting Started</a>
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Getting Started</a>
+                <li class="toctree-l1"><a class="" href="https://github.com/RebUnderwood/Narrare">Github</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
@@ -92,8 +92,6 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#variables">Variables</a>
         <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#player_inventory">player_inventory</a>
-    </li>
     <li class="toctree-l4"><a class="reference internal" href="#map">map</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#previous_text_displayed">previous_text_displayed</a>
@@ -108,10 +106,6 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a>
         <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#add_to_inventory">add_to_inventory</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#remove_from_inventory">remove_from_inventory</a>
-    </li>
     <li class="toctree-l4"><a class="reference internal" href="#say">say</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#clear">clear</a>
@@ -131,6 +125,12 @@
                 <li class="toctree-l3"><a class="reference internal" href="../room/">Room</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../map/">Map</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../command/">Command</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../interactable/">Interactable</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../interactablesinterface/">InteractablesInterface</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../prompt/">Prompt</a>
                 </li>
@@ -168,7 +168,7 @@
               
                 <h1 id="narrare">Narrare</h1>
 <p>The Narrare global script contains variables, enums, signals, and functions used throughout a Narrāre game. It can be accessed with <code>Narrare</code> from anywhere in the project. For example:</p>
-<pre><code class="language-godot">Narrare.say_someting(&quot;Hello world!&quot;);
+<pre><code class="language-godot">Narrare.say(&quot;Hello world!&quot;);
 </code></pre>
 <hr />
 <h2 id="enums">Enums</h2>
@@ -212,11 +212,6 @@
 </blockquote>
 <hr />
 <h2 id="variables">Variables</h2>
-<h5 id="player_inventory">player_inventory</h5>
-<p><strong><code>player_inventory: PackedStringArray;</code></strong></p>
-<blockquote>
-<p>The player's inventory. Contains a PackedStringArray of names of interactables which reference interactables in the Interactables.gd script's <code>objs</code> variable. To add an interactable to the player's inventory, use <code>Narrare.add_to_inventory(item_name: String)</code>. To remove an item, use <code>remove_from_inventory(item_name: String)</code>.</p>
-</blockquote>
 <h5 id="map">map</h5>
 <blockquote>
 <p><strong><code>map: Map</code></strong></p>
@@ -244,16 +239,6 @@
 </blockquote>
 <hr />
 <h2 id="functions">Functions</h2>
-<h5 id="add_to_inventory">add_to_inventory</h5>
-<blockquote>
-<p><strong><code>add_to_inventory(item_name: String) -&gt; void</code></strong></p>
-<p>Adds an interactable name to the player's inventory.</p>
-</blockquote>
-<h5 id="remove_from_inventory">remove_from_inventory</h5>
-<blockquote>
-<p><strong><code>remove_from_inventory(item_name: String) -&gt; bool</code></strong></p>
-<p>Removes an interactable by name from the player's inventory. Returns <code>false' if that interactable name wasn't found in the inventory, otherwise returns</code>true`.</p>
-</blockquote>
 <h5 id="say">say</h5>
 <blockquote>
 <p><strong><code>say(message: String) -&gt; void</code></strong></p>

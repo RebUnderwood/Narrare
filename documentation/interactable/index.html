@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Map - Narrāre</title>
+    <title>Interactable - Narrāre</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Map";
-        var mkdocs_page_input_path = "documentation/map.md";
+        var mkdocs_page_name = "Interactable";
+        var mkdocs_page_input_path = "documentation/interactable.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -72,13 +72,17 @@
     <ul class="current">
                 <li class="toctree-l3"><a class="reference internal" href="../room/">Room</a>
                 </li>
-                <li class="toctree-l3 current"><a class="reference internal current" href="#">Map</a>
-    <ul class="current">
-    </ul>
+                <li class="toctree-l3"><a class="reference internal" href="../map/">Map</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../command/">Command</a>
                 </li>
-                <li class="toctree-l3"><a class="reference internal" href="../interactable/">Interactable</a>
+                <li class="toctree-l3 current"><a class="reference internal current" href="#">Interactable</a>
+    <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#constructing-an-interactable">Constructing an Interactable</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a>
+    </li>
+    </ul>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../interactablesinterface/">InteractablesInterface</a>
                 </li>
@@ -108,7 +112,7 @@
           <li class="breadcrumb-item">Documentation</li>
           <li class="breadcrumb-item">Core</li>
           <li class="breadcrumb-item">Classes</li>
-      <li class="breadcrumb-item active">Map</li>
+      <li class="breadcrumb-item active">Interactable</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -117,13 +121,44 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="tbd">TBD</h1>
+                <h1 id="interactable-class">Interactable Class</h1>
+<p>In Narrāre, objects and people and anything you can interact with in a game are defined as an Interactable. Interactables may have multiple <em>interactions</em>, which define the ways an Interactable can be interacted with.</p>
+<p>Interactables are identified by an identifier, which is a <code>String</code> that is unique to them within their context. The identifier should be the exact string you want the player to interact with this Interactable using. For example, if you want the player to be able to type "open box" then the identifier for that Interactable should be "box".</p>
+<h2 id="constructing-an-interactable">Constructing an Interactable</h2>
+<p>You can construct an Interactable using <code>Interactable.new(identifier: String)</code>. Let's make a new Interactable with the identifier 'box':</p>
+<pre><code class="language-gdscript">var box_interactable: Interactable = Interactable.new(&quot;box&quot;);
+</code></pre>
+<p>Great! We now have an Interactable. Let's add some interactions next using <a href="#add_interaction">add_interaction</a>:</p>
+<pre><code class="language-gdscript">box_interactable.add_interaction(&quot;look&quot;, func () -&gt; String: return &quot;It's a box!&quot;);
+box_interactable.add_interaction(&quot;open&quot;, func () -&gt; String: return &quot;There's nothing inside! What a rip-off.&quot;)
+</code></pre>
+<p>Now we have two ways we can interact with this Interactable: 'look' and 'open'.</p>
+<p>Incidentally, these methods can be chained, which results in slightly cleaner code:</p>
+<pre><code class="language-gdscript">var box_interactable: Interactable = Interactable.new(&quot;box&quot;)\
+    .add_interaction(&quot;look&quot;, func () -&gt; String: return &quot;It's a box!&quot;)\
+    .add_interaction(&quot;open&quot;, func () -&gt; String: return &quot;There's nothing inside! What a rip-off.&quot;);
+</code></pre>
+<p>Now that we have some interactions, we can attempt an interaction with <a href="#attempt_interaction"><code>attempt_interaction</code></a>:</p>
+<pre><code class="language-gdscript">print(box_interactable.attempt_interaction(&quot;open&quot;, [])); # prints, 'There's nothing inside! What a rip-off.'
+</code></pre>
+<p>Note that you will typically not have to use this method; instead, you will usually be working through an <a href="../interactablesinterface/">InteractablesInterface</a> and should instead use that class' <a href="../interactablesinterface/#attempt_interaction"><code>attempt_interaction</code></a> method.</p>
+<h2 id="functions">Functions</h2>
+<h5 id="add_interaction">add_interaction</h5>
+<blockquote>
+<p><strong><code>add_interaction(interaction_identifier: String, interaction: Callable) -&gt; Interactable</code></strong></p>
+<p>Adds an interaction to this Interactable. The interaction will be identified by <code>interaction_identifier</code>. <code>interaction</code> should be a callable; it can take any number of arguments (it is called using <a href="https://docs.godotengine.org/en/stable/classes/class_callable.html#class-callable-method-callv"><code>Callable.callv</code></a>, meaning you don't have to worry about unpacking arguments when called from <a href="#attempt_interaction"><code>attempt_interaction</code></a>) and can return whatever you want, though typically this will be a <code>String</code> which will be output to the player. This method returns <code>self</code>, making it chainable.</p>
+</blockquote>
+<h5 id="attempt_interaction">attempt_interaction</h5>
+<blockquote>
+<p><strong><code>attempt_interaction(interaction_identifier: String, args: Array) -&gt; Variant</code></strong></p>
+<p>Attempts to call the interaction with identifier <code>interaction_identifier</code> and arguments <code>args</code> (it is called using <a href="https://docs.godotengine.org/en/stable/classes/class_callable.html#class-callable-method-callv"><code>Callable.callv</code></a>, meaning you don't have to worry about unpacking args) If the interaction exists within this Interactable, the result of the interaction <code>Callable</code> will be returned. If it doesn't exist, <code>null</code> is returned.</p>
+</blockquote>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../room/" class="btn btn-neutral float-left" title="Room"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../command/" class="btn btn-neutral float-right" title="Command">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../command/" class="btn btn-neutral float-left" title="Command"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../interactablesinterface/" class="btn btn-neutral float-right" title="InteractablesInterface">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -146,10 +181,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../room/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../command/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../command/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../interactablesinterface/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -45,11 +45,11 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="" href="https://github.com/RebUnderwood/Narrare">Github</a>
+                <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Getting Started</a>
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Getting Started</a>
+                <li class="toctree-l1"><a class="" href="https://github.com/RebUnderwood/Narrare">Github</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
@@ -60,6 +60,26 @@
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="#">Data</a>
     <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#variables">Variables</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#player_inventory">player_inventory</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#add_to_inventory">add_to_inventory</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#remove_from_inventory">remove_from_inventory</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get_inventory">get_inventory</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#to_dict">to_dict</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#from_dict">from_dict</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../interactables/">Interactables</a>
@@ -75,6 +95,12 @@
                 <li class="toctree-l3"><a class="reference internal" href="../room/">Room</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../map/">Map</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../command/">Command</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../interactable/">Interactable</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../interactablesinterface/">InteractablesInterface</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../prompt/">Prompt</a>
                 </li>
@@ -110,7 +136,47 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="tbd">TBD</h1>
+                <h1 id="data-script">Data Script</h1>
+<p>The Data script (Scripts/Data.gd) can be used to store data related to the game state. Things like the player's name, event flags, etc. It is a global script, meaning it can be accessed from anywhere in the project by using 'Data.my_variable_name.'</p>
+<p>Information should be stored in Data as variables:</p>
+<pre><code class="language-gdscript">var player_name: String = &quot;Stranger&quot;;
+var my_flag: bool = false;
+</code></pre>
+<p>NOTE: Every variable in the Data script must be of a type that is able to be converted to JSON by <code>JSON.stringify()</code>. This is because the contents of the Data script are converted into a Dictionary and stored as JSON when calling <a href="../narrare_global_script/#save"><code>Narrare.save()</code></a>. For more information on saving, see <a href="../narrare_global_script/">Narrare</a>.</p>
+<p>The Data script comes with a variable and methods related to storing and retrieving a player's inventory. These are defined in the <code>DataBase</code> class, which the Data script extends.</p>
+<h2 id="variables">Variables</h2>
+<h5 id="player_inventory">player_inventory</h5>
+<p><strong><code>player_inventory: PackedStringArray;</code></strong></p>
+<blockquote>
+<p>The player's inventory. Contains a PackedStringArray of identifiers of <a href="../interactable/">Interactable</a>s which reference <a href="../interactable/">Interactable</a>s defined in the <a href="../interactables/">Interactables</a> script. To add an <a href="../interactable/">Interactable</a> to the player's inventory, use <a href="#add_to_inventory">add_to_inventory</a>. To remove an item, use <a href="#remove_from_inventory">remove_from_inventory</a>. You can use <a href="#get_inventory">get_inventory</a> to access this property.</p>
+<p>Note that <a href="../interactable/">Interactable</a> in the player's inventory must be stored in the <a href="../interactables/">Interactables</a> script, NOT in a <a href="../room/">Room</a>'s <code>room_interactables</code> property.</p>
+</blockquote>
+<h2 id="functions">Functions</h2>
+<h5 id="add_to_inventory">add_to_inventory</h5>
+<blockquote>
+<p><strong><code>add_to_inventory(item_name: String) -&gt; void</code></strong></p>
+<p>Adds an interactable name to the player's inventory.</p>
+</blockquote>
+<h5 id="remove_from_inventory">remove_from_inventory</h5>
+<blockquote>
+<p><strong><code>remove_from_inventory(item_name: String) -&gt; bool</code></strong></p>
+<p>Removes an interactable by name from the player's inventory. Returns <code>false</code> if that interactable name wasn't found in the inventory, otherwise returns <code>true</code>.</p>
+</blockquote>
+<h5 id="get_inventory">get_inventory</h5>
+<blockquote>
+<p><strong><code>get_inventory() -&gt; PackedStringArray</code></strong></p>
+<p>Gets the player's inventory.</p>
+</blockquote>
+<h5 id="to_dict">to_dict</h5>
+<blockquote>
+<p><strong><code>to_dict() -&gt; Dictionary</code></strong></p>
+<p>Converts this script's properties into a <code>Dictionary</code>. Called when using <a href="../narrare_global_script/#save"><code>Narrare.save()</code></a>.</p>
+</blockquote>
+<h5 id="from_dict">from_dict</h5>
+<blockquote>
+<p><strong><code>from_dict(in_data_dict: Dictionary) -&gt; void</code></strong></p>
+<p>Takes a <code>Dictionary</code> <code>in_data_dict</code> generated by <a href="#to_dict">to_dict</a> and sets the contents of the Data script to equal the values in <code>in_data_dict</code>. Called when using <a href="../narrare_global_script/#load_save"><code>Narrare.load()</code></a>.</p>
+</blockquote>
               
             </div>
           </div><footer>

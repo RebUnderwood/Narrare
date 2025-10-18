@@ -44,14 +44,14 @@
                 <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
                 </li>
               </ul>
-              <ul>
-                <li class="toctree-l1"><a class="" href="https://github.com/RebUnderwood/Narrare">Github</a>
-                </li>
-              </ul>
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Getting Started</a>
     <ul class="current">
     </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="" href="https://github.com/RebUnderwood/Narrare">Github</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
@@ -75,6 +75,12 @@
                 <li class="toctree-l3"><a class="reference internal" href="../documentation/room/">Room</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../documentation/map/">Map</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../documentation/command/">Command</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../documentation/interactable/">Interactable</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../documentation/interactablesinterface/">InteractablesInterface</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../documentation/prompt/">Prompt</a>
                 </li>
@@ -111,6 +117,7 @@
                 <h1 id="getting-started">Getting Started</h1>
 <p>Most of Narrāre's internal logic is housed within the Narrāre Core folder. You will probably not need to modify anything in there unless you are making fundamental changes to Narrāre. Exposed to the user are the <a href="../documentation/narrare_global_script/">Narrare</a> global script, the <a href="../documentation/room/">Room</a> and <a href="../documentation/map/">Map</a> classes, and the <a href="../documentation/prompt/">Prompt</a> and <a href="../documentation/inputrequest/">InputRequest</a> classes, which will be basic building blocks of your game.</p>
 <p>Additionally, in the Root folder of the project is a folder called Scripts. This contains three scripts by default: <a href="../documentation/commands/">Commands</a>, <a href="../documentation/data/">Data</a>, and <a href="../documentation/interactables/">Interactables</a>. These you <em>should</em> modify, as they are integral to the logic of your game. Commands defines what commands will be available for the player to use; Data will contain any variables you need to track game state; and Interactables defines all the things within the game that can be interacted with and how.</p>
+<p>The template by default has a fully-featured example game in it which you can use for reference or to get started quickly. Feel free to use, change, or remove anything and everything as needed! Experiment! Go wild!</p>
               
             </div>
           </div><footer>

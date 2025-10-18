@@ -45,11 +45,11 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="" href="https://github.com/RebUnderwood/Narrare">Github</a>
+                <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Getting Started</a>
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../../getting_started/">Getting Started</a>
+                <li class="toctree-l1"><a class="" href="https://github.com/RebUnderwood/Narrare">Github</a>
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
@@ -62,6 +62,8 @@
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="#">Interactables</a>
     <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#tutorial">Tutorial</a>
+    </li>
     </ul>
                 </li>
     </ul>
@@ -75,6 +77,12 @@
                 <li class="toctree-l3"><a class="reference internal" href="../room/">Room</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../map/">Map</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../command/">Command</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../interactable/">Interactable</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../interactablesinterface/">InteractablesInterface</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../prompt/">Prompt</a>
                 </li>
@@ -110,7 +118,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="tbd">TBD</h1>
+                <h1 id="interactables-script">Interactables Script</h1>
+<p>The Interactables script (Scripts/Interactables.gd) should be used to store any <a href="../interactable/">Interactable</a>s that need to be accessed across <a href="../room/">Room</a>s, i.e. <a href="../interactable/">Interactable</a>s that can be added to the player's inventory (see <a href="../data/">Data</a>) or <a href="../interactable/">Interactable</a>s that move between different <a href="../room/">Room</a>s. For <a href="../room/">Room</a>-specific <a href="../interactable/">Interactable</a>s, use that <a href="../room/">Room</a>'s <a href="../room/#room_interactables"><code>room_interactables</code></a> property.</p>
+<p>The Interactables script extends <a href="../interactablesinterface/">InteractableInterface</a>, so for more detailed information at associated methods, look there.</p>
+<p><a href="../interactable/">Interactable</a>s within a given <a href="../interactablesinterface/">InteractableInterface</a> (like the Interactables script) should all be given <em>unique</em> identifiers. The identifier should be identical to the name of the object you want the player to use to interact with it, i.e. if you want the player to be able to type "open box" then the identifier for that <a href="../interactable/">Interactable</a> should be "box".</p>
+<p><a href="../interactable/">Interactable</a>s in this script will <em>override</em> <a href="../interactable/">Interactable</a>s with the same identifier in a <a href="../room/">Room</a>'s <a href="../room/#room_interactables"><code>room_interactables</code></a> property, so consider anything defined here to be a unique object that should not be replicated elsewhere.</p>
+<h2 id="tutorial">Tutorial</h2>
+<p>Let's look at how to add <a href="../interactable/">Interactable</a>s. Let's make a new <a href="../interactable/">Interactable</a> called 'box' in our Interactables script:</p>
+<pre><code class="language-gdscript">var box_interactable = Interactable.new(&quot;box&quot;);
+</code></pre>
+<p>It doesn't have any interactions, so it's pretty useless right now. Let's add one called 'open':</p>
+<pre><code class="language-gdscript">box_interactable.add_interaction(&quot;open&quot;, func () -&gt; String: return &quot;There's nothing inside! What a rip-off.&quot;)
+</code></pre>
+<p>Now, we can register our box to the Interactables script by calling <a href="../interactablesinterface/#add_interactables"><code>add_interactables</code></a> in the script's <code>_ready()</code> function:</p>
+<pre><code class="language-gdscript">func _ready() -&gt; void:
+    add_interactables([
+        box_interactable,
+    ]);
+</code></pre>
+<p>And that's it! Now we can access that interactable by name from anywhere in the project with <a href="../interactablesinterface/#get_interactable"><code>get_interactable</code></a> or attempt an interaction with it with <a href="../interactablesinterface/#attempt_interaction">attempt_interaction</a>:</p>
+<pre><code class="language-gdscript">var gotten_box = Interactables.get_interactable(&quot;box&quot;);
+
+print(Interactables.attempt_interaction(&quot;box&quot;, &quot;open&quot;));
+</code></pre>
               
             </div>
           </div><footer>
