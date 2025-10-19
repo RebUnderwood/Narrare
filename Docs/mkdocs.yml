@@ -20,6 +20,7 @@ nav:
         - Room: documentation/room.md
         - Map: documentation/map.md
         - Command: documentation/command.md
+        - CommandsBase: documentation/commandsbase.md
         - Interactable: documentation/interactable.md
         - InteractablesInterface: documentation/interactablesinterface.md
         - Prompt: documentation/prompt.md
