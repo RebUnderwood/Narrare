@@ -72,11 +72,21 @@
     <ul class="current">
                 <li class="toctree-l3 current"><a class="reference internal current" href="#">Room</a>
     <ul class="current">
+    <li class="toctree-l4"><a class="reference internal" href="#exits">Exits</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#describing-a-room">Describing a Room</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#variables">Variables</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a>
+    </li>
     </ul>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../map/">Map</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../command/">Command</a>
+                </li>
+                <li class="toctree-l3"><a class="reference internal" href="../commandsbase/">CommandsBase</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../interactable/">Interactable</a>
                 </li>
@@ -117,7 +127,98 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="tbd">TBD</h1>
+                <h1 id="room-class">Room Class</h1>
+<p>A Room represents a physical area in the game which the player can travel to and/or be in. It does not have to physically be a room—a garden could be a Room, or part of a hallway, or a graveyard. It's just a container meant to represent a defined area in the game world.</p>
+<p>You will typically work with Rooms as children of a <a href="../map/">Map</a> node.</p>
+<h2 id="exits">Exits</h2>
+<p>A Room has ten defined exits; eight in compass directions, one up and one down. These are represented as variables with the following naming convention: <a href="#exit_direction"><code>exit_&lt;direction&gt;</code></a>. For example, the exit to the southeast is <code>exit_southeast</code>. The exit up is <code>exit_up</code>. The exist down is <code>exit_down</code>. By default, these variables are set to <code>null</code>; to make an exit work, the intended direction's variable should beset as a refrence to another Room. For example, if we have two Rooms, LeftRoom and RightRoom, and LeftRoom is located to the west of RightRoom, LeftRoom's <code>exit_east</code> variable should be set to RightRoom, and likewise RightRoom's <code>exit_west</code> should be set to LeftRoom. This will enable the correct navigation between the two Rooms. These variables are all exports, so they can be easily set in the editor.</p>
+<h2 id="describing-a-room">Describing a Room</h2>
+<p>When looking at a Room or entering one, it is important that the Room be described to the player. In order to do this with some flexibility, multiple variables and functions have been provided to do this.</p>
+<p>The primary description of a Room should be housed within the <a href="#look_description"><code>look_description</code></a> variable. This is the description that should be provided when the player looks at the room, and should include information such as what exits are available and any <a href="../interactable/">Interactables</a> that may be present.</p>
+<p>However, there may be cases where the description needs to change depending on outside factors. In order to achieve this, simply override the Room base class' <a href="#look"><code>look()</code></a> function to return a different string:</p>
+<pre><code class="language-gdscript">func look() -&gt; String:
+    if !Data.screwdriver_taken:
+        return &quot;There is an echo in here. There is a [sign] on the wall. Sitting on a table in the corner is a [screwdriver]. A door to the west leads to the Right Room.&quot;
+    else:
+        return &quot;There is an echo in here. There is a [sign] on the wall. An empty table sits in the corner. A door to the west leads to the Right Room.&quot;;
+</code></pre>
+<p>By default, all the <a href="#look"><code>look()</code></a> function does is return the <a href="#look_description"><code>look_description</code></a> variable, so you don't need to accomodate any special logic here.</p>
+<p>In addition to the <a href="#look_description"><code>look_description</code></a> variable, there are also the <a href="#entry_description"><code>entry_description</code></a> and <a href="#enter_direction_text"><code>enter_&lt;direction&gt;_text</code></a> variables. Both are used in the Room's <a href="#enter"><code>enter()</code></a> function.</p>
+<p>When navigating into a new Room, the resulting description that is shown to the player comes from calling that room's <a href="#enter"><code>enter()</code></a> function. <a href="#enter"><code>enter()</code></a> combines several descriptions (including the one produced by<a href="#look"><code>look()</code></a>) into one description, which it returns. These descriptions are in the following way:</p>
+<pre><code class="language-plaintext">room_name
+enter_&lt;direction&gt;_text entry_description look()
+</code></pre>
+<p><a href="#room_name"><code>room_name</code></a> is the name of the room, i.e. "Left Room".</p>
+<p><a href="#enter_direction_text"><code>enter_&lt;direction&gt;_text</code></a> is a <code>String</code> corresponding to the direction the Room was entered from. There is an <a href="#enter_direction_text"><code>enter_&lt;direction&gt;_text</code></a> for each <a href="#exit_direction"><code>exit_&lt;direction&gt;</code></a>: <code>exit_southeast</code> corresponds to <code>enter_southeast_text</code>, etc. For example, "You leave the Right Room, shutting the door behind you."</p>
+<p><a href="#entry_description"><code>entry_description</code></a> is something that is described when you are in the Room, i.e. "You are now in the Left Room."</p>
+<p>So, with the previous examples, calling <a href="#enter"><code>enter()</code></a> produces the following description:</p>
+<pre><code class="language-plaintext">Left Room
+You leave the Right Room, shutting the door behind you. You are now in the Left Room. There is an echo in here. There is a [sign] on the wall. An empty table sits in the corner. A door to the west leads to the Right Room.
+</code></pre>
+<hr />
+<h2 id="variables">Variables</h2>
+<h5 id="exit_direction">exit_&lt;direction&gt;</h5>
+<blockquote>
+<p><strong><code>exit_&lt;direction&gt;: Room</code></strong></p>
+<p>A set of variables dictating the exits to a Room. There is a corresponding variable for every compass direction as well as up and down. For example, the exit to the southeast is <code>exit_southeast</code>. The exit up is <code>exit_up</code>. The exist down is <code>exit_down</code>. If there is no exit in a given direction, that direction's exit variable should be set to null. Otherwise, it should be set to the Room that is reached by travelling in that direction.</p>
+</blockquote>
+<h5 id="enter_direction_text">enter_&lt;direction&gt;_text</h5>
+<blockquote>
+<p><strong><code>enter_&lt;direction&gt;_text: String</code></strong></p>
+<p>A set of variables that can be used to provide additional description when entering a Room from a specific direction. There is an <code>enter_&lt;direction&gt;_text</code> for every <code>exit_&lt;direction&gt;</code>.</p>
+</blockquote>
+<h5 id="entry_description">entry_description</h5>
+<blockquote>
+<p><strong><code>entry_description: String</code></strong></p>
+<p>Used to provide an additional description when entering a room.</p>
+</blockquote>
+<h5 id="look_description">look_description</h5>
+<blockquote>
+<p><strong><code>look_description: String</code></strong></p>
+<p>Used to provide a description of the Room.</p>
+</blockquote>
+<h5 id="room_name">room_name</h5>
+<blockquote>
+<p><strong><code>room_name: String</code></strong></p>
+<p>In the default <a href="#look"><code>look()</code></a> function, this is returned. Provides a convenient way to set the description of a Room for Rooms whose description does not change.</p>
+</blockquote>
+<h5 id="interactables">interactables</h5>
+<blockquote>
+<p><strong><code>interactables: Array[String]</code></strong></p>
+<p>An array of <a href="../interactable/">Interactable</a> identifier strings. These can be defined either in the <a href="../interactables/">Interactables</a> script or in this Room's <a href="#room_interactables"><code>room_interactables</code></a> property.</p>
+</blockquote>
+<h5 id="room_interactables">room_interactables</h5>
+<blockquote>
+<p><strong><code>room_interactables: InteractablesInterface</code></strong></p>
+<p>Used to hold <em>room specific</em> <a href="../interactable/">Interactable</a>s. These should be <a href="../interactable/">Interactable</a>s that will never leave this room or be used elsewhere; therefore, they can share identifiers with other <a href="../interactable/">Interactable</a>s in <em>other Rooms</em>. Notably, they will still be overridden by <a href="../interactable/">Interactable</a>s with the same identifier in the <a href="../interactables/">Interactables</a> script. For more information on how to interact with this property, see <a href="../interactablesinterface/">InteractablesInterface</a>.</p>
+</blockquote>
+<hr />
+<h2 id="functions">Functions</h2>
+<h5 id="get_room_in_direction">get_room_in_direction</h5>
+<blockquote>
+<p><strong><code>get_room_in_direction(direction: Narrare.Direction) -&gt; Room</code></strong></p>
+<p>Returns the Room in the corresponding exit to <code>direction</code>, where <code>direction</code> is a <a href="../narrare_global_script/#direction"><code>Narrare.Direction</code></a>. Returns <code>null</code> if there is no Room in that exit.</p>
+</blockquote>
+<h5 id="look">look</h5>
+<blockquote>
+<p><strong><code>look() -&gt; String</code></strong></p>
+<p>By default, returns the value of <a href="#look_description"><code>look_description</code></a>, but can be overridden for custom behaviour.</p>
+</blockquote>
+<h5 id="enter">enter</h5>
+<blockquote>
+<p><strong><code>enter(from: Room) -&gt; String</code></strong></p>
+<p>BCompiles a description of the player entering the room from <a href="#room_name"><code>room_name</code></a>, <a href="#enter_direction_text"><code>enter_&lt;direction&gt;_text</code></a>, <a href="#entry_description"><code>entry_description</code></a>, and <a href="#look"><code>look()</code></a>. <code>from</code> should be the Room that the player was in before entering this one. Note: does not actually change the player's position in the map; see <a href="../map/"><code>Map</code></a> for information on how to do that.</p>
+</blockquote>
+<h5 id="enter_trigger">enter_trigger</h5>
+<blockquote>
+<p><strong><code>enter_trigger() -&gt; void</code></strong></p>
+<p>By default, does nothing, but is called when the Room is entered. Override with custom behaviour if needed.</p>
+</blockquote>
+<h5 id="exit_trigger">exit_trigger</h5>
+<blockquote>
+<p><strong><code>exit_trigger() -&gt; void</code></strong></p>
+<p>By default, does nothing, but is called when the Room is exited. Override with custom behaviour if needed.</p>
+</blockquote>
               
             </div>
           </div><footer>

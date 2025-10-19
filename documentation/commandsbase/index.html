@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Command - Narrāre</title>
+    <title>CommandsBase - Narrāre</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Command";
-        var mkdocs_page_input_path = "documentation/command.md";
+        var mkdocs_page_name = "CommandsBase";
+        var mkdocs_page_input_path = "documentation/commandsbase.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -74,15 +74,11 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../map/">Map</a>
                 </li>
-                <li class="toctree-l3 current"><a class="reference internal current" href="#">Command</a>
-    <ul class="current">
-    <li class="toctree-l4"><a class="reference internal" href="#constructing-a-command">Constructing a Command</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a>
-    </li>
-    </ul>
+                <li class="toctree-l3"><a class="reference internal" href="../command/">Command</a>
                 </li>
-                <li class="toctree-l3"><a class="reference internal" href="../commandsbase/">CommandsBase</a>
+                <li class="toctree-l3 current"><a class="reference internal current" href="#">CommandsBase</a>
+    <ul class="current">
+    </ul>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../interactable/">Interactable</a>
                 </li>
@@ -114,7 +110,7 @@
           <li class="breadcrumb-item">Documentation</li>
           <li class="breadcrumb-item">Core</li>
           <li class="breadcrumb-item">Classes</li>
-      <li class="breadcrumb-item active">Command</li>
+      <li class="breadcrumb-item active">CommandsBase</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -123,38 +119,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="command-class">Command Class</h1>
-<p>Commands are how the player interacts with the game. For example, a common command in many text-based adventure games is some variant of 'go' followed by a cardinal direction, which allows movement between rooms. Commands in Narrāre take the form of <a href="./">Command</a> objects, which must be added to the command stack in the <a href="../commands/">Commands</a> script.</p>
-<p>Commands have essentially two components: a Regular Expression pattern, which is used to match the command against user input, and a callable, which is what is executed when the Command is matched.</p>
-<h2 id="constructing-a-command">Constructing a Command</h2>
-<p>You can construct a new Command using <code>Command.new(regex_string: String, in_callable: Callable)</code>. Here's an example, a Command for 'echo' that returns whatever the player said:</p>
-<pre><code class="language-gdscript">var echo_callable: Callable = (
-    func(_interactables: InteractablesInterface, matches: RegExMatch) -&gt; String: 
-        var out: String = &quot;&quot;
-        var echo_phrase: String = matches.get_string(&quot;phrase_group&quot;);
-        if echo_phrase.is_empty():
-            out = &quot;Echo what?&quot;;
-        else:
-            out = echo_phrase;
-        return out;
-        );
-var echo_command = Command.new(&quot;^echo ?(?'phrase_group'.+)?&quot;, echo_callable);
-</code></pre>
-<p>Note that the callable has a very specific function signature. It should take two arguments: an <a href="../interactablesinterface/">InteractablesInterface</a> and a <a href="https://docs.godotengine.org/en/stable/classes/class_regexmatch.html">RegExMatch</a>. The <a href="../interactablesinterface/">InteractablesInterface</a> will contain all of the <a href="../interactables/">Interactables</a> that are available to the player, both from the current <a href="../room/">Room</a> and the player's inventory (see <a href="../data/">Data</a>). The <a href="https://docs.godotengine.org/en/stable/classes/class_regexmatch.html">RegExMatch</a> will contain any matching groups from the Command's pattern; this is where you'll be able to access any arguments the player supplied.</p>
-<p>Additionally, the callable should return a <code>String</code>. This string is what will be presented to the player as the result of executing the command they inputted. In our above 'echo' example, if the player typed 'echo Hello world!' then the returned value from the callable is "hello world!" (commands are lowercased as part of the process of matching) and so this is what will be shown to the player using <a href="../narrare_global_script/#say"><code>Narrare.say</code></a>.</p>
-<hr />
-<h2 id="functions">Functions</h2>
-<h5 id="attempt_match_execute">attempt_match_execute</h5>
-<blockquote>
-<p><strong><code>attempt_match_execute(input_string: String, interactables: InteractablesInterface) -&gt; Variant</code></strong></p>
-<p>Attempts to match <code>input_string</code> against the Command's Regular Expression pattern. If the pattern matches, the Command will be executed and the callable will be called, returning its result. If the pattern does not match the input, then <code>null</code> is returned.</p>
-</blockquote>
+                <h1 id="commandsbase-class">CommandsBase Class</h1>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../map/" class="btn btn-neutral float-left" title="Map"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../commandsbase/" class="btn btn-neutral float-right" title="CommandsBase">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../command/" class="btn btn-neutral float-left" title="Command"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../interactable/" class="btn btn-neutral float-right" title="Interactable">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -177,10 +148,10 @@ var echo_command = Command.new(&quot;^echo ?(?'phrase_group'.+)?&quot;, echo_cal
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../map/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../command/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../commandsbase/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../interactable/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

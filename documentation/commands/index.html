@@ -80,6 +80,8 @@
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../command/">Command</a>
                 </li>
+                <li class="toctree-l3"><a class="reference internal" href="../commandsbase/">CommandsBase</a>
+                </li>
                 <li class="toctree-l3"><a class="reference internal" href="../interactable/">Interactable</a>
                 </li>
                 <li class="toctree-l3"><a class="reference internal" href="../interactablesinterface/">InteractablesInterface</a>
@@ -120,9 +122,9 @@
               
                 <h1 id="commands-script">Commands Script</h1>
 <p>The Commands script (Scripts/Commands.gd) is used to define and register your game's commands. Commands are how the player interacts with the game. For example, a common command in many text-based adventure games is some variant of 'go' followed by a cardinal direction, which allows movement between rooms. A number of example commands have been included in this file in the template; feel free to add, remove, or modify them as needed!</p>
-<p>Commands in Narrāre take the form of <a href="../command/">Command</a> objects, which are stored in this script's command stack. The command stack is an <code>Array</code> of <a href="../command/">Command</a>s that, when <a href="commandbase.md#parse_command"><code>Commands.parse_command</code></a> is called, are iterated through in an attempt to match the input from the player against each <a href="../command/">Command</a>'s pattern. When a match is found, <code>parse_command</code> stops and that <a href="../command/">Command</a> is executed.</p>
+<p>Commands in Narrāre take the form of <a href="../command/">Command</a> objects, which are stored in this script's command stack. The command stack is an <code>Array</code> of <a href="../command/">Command</a>s that, when <a href="../commandsbase/#parse_command"><code>Commands.parse_command</code></a> is called, are iterated through in an attempt to match the input from the player against each <a href="../command/">Command</a>'s pattern. When a match is found, <code>parse_command</code> stops and that <a href="../command/">Command</a> is executed.</p>
 <p>Because of this, <em>the order of <a href="../command/">Command</a>s in the command stack is important.</em> For example, a common command is 'then'. 'then' takes two other commands to either side of itself and performs them in sequence, meaning the player can input multiple commands in one step. If 'then' was placed after our previous 'go' command in the command stack then the input command "go east then go west" would only execute 'go east' because it matches the first go command and then stops. To get the correct behaviour, we would want to have 'then' before 'go' in the command stack, because in that case 'then' is matched first and can then execute the two 'go's correctly.</p>
-<p>This script is global and can be accessed using <code>Commands</code>. More information about its methods can be found in the documentation for the <a href="commandsbase.md">CommandsBase</a> class, which this script extends.</p>
+<p>This script is global and can be accessed using <code>Commands</code>. More information about its methods can be found in the documentation for the <a href="../commandsbase/">CommandsBase</a> class, which this script extends.</p>
 <h2 id="tutorial">Tutorial</h2>
 <p>Let's look at how to add commands. First, we'll crreate two <a href="../command/">Command</a>s: 'look' and 'take':</p>
 <pre><code class="language-gdscript">var look_callable: Callable = (
@@ -170,10 +172,10 @@ var take_command = Command.new(&quot;^take(?: (?'take_group'[\\w ]+))?&quot;, ta
         take_command,
     ]);
 </code></pre>
-<p>And that's it! Now, if we were to call <a href="commandbase.md#parse_command"><code>Commands.parse_command</code></a> like so:</p>
+<p>And that's it! Now, if we were to call <a href="../commandsbase/#parse_command"><code>Commands.parse_command</code></a> like so:</p>
 <pre><code class="language-gdscript">Commands.parse_command(&quot;look at box&quot;);
 </code></pre>
-<p><a href="commandbase.md#parse_command"><code>Commands.parse_command</code></a> will match the 'look' <a href="../command/">Command</a>'s pattern and execute it. Note again that because 'look' comes before 'take' in the command stack, Narrāre will attempt to match to the 'look' command before it tries to match to the 'take' command. Keep this in mind When setting up your stack!</p>
+<p><a href="../commandsbase/#parse_command"><code>Commands.parse_command</code></a> will match the 'look' <a href="../command/">Command</a>'s pattern and execute it. Note again that because 'look' comes before 'take' in the command stack, Narrāre will attempt to match to the 'look' command before it tries to match to the 'take' command. Keep this in mind When setting up your stack!</p>
               
             </div>
           </div><footer>
