@@ -9,12 +9,10 @@ var echo = Interactable.new("echo")\
 			));
 			
 var right_sign = Interactable.new("sign")\
-	.add_interaction("look", (
-		func (): 
-			return "It says, 'Welcome to the Left Room!'"
-			));
+	.add_basic_interaction("look", "It says, 'Welcome to the Left Room!'");
 
 func _ready() -> void:
+	super();
 	interactables = ["screwdriver", "echo", "sign"];
 	room_interactables.add_interactables([
 		echo, 
@@ -23,6 +21,6 @@ func _ready() -> void:
 
 func look() -> String:
 	if !Data.screwdriver_taken:
-		return "There is an echo in here. There is a [sign] on the wall. Sitting on a table in the corner is a [screwdriver]. A door to the west leads to the Right Room."
+		return "There is an echo in here. There is a [sign] on the wall. Sitting on a table in the corner is a [screwdriver]. A door to the east leads to the Right Room."
 	else:
-		return "There is an echo in here. There is a [sign] on the wall. An empty table sits in the corner. A door to the west leads to the Right Room.";
+		return "There is an echo in here. There is a [sign] on the wall. An empty table sits in the corner. A door to the east leads to the Right Room.";

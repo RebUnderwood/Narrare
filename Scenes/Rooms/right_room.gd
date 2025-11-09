@@ -4,9 +4,9 @@ var lamp = Interactable.new("lamp")\
 	.add_interaction("look", (
 		func ():
 			if Data.lamp_on:
-				return "The lamp is on. You can use 'use' to switch it off.";
+				return "The lamp is on. You can use 'use' to switch it off. The bottom of the lamp is held on by screws.";
 			else:
-				return "The lamp is off. You can use 'use' to switch it on.";
+				return "The lamp is off. You can use 'use' to switch it on. The bottom of the lamp is held on by screws.";
 			))\
 	.add_interaction("use", (
 		func (_used_on: String):
@@ -19,21 +19,14 @@ var lamp = Interactable.new("lamp")\
 			));
 
 var piece_of_paper = Interactable.new("piece of paper")\
-	.add_interaction("look", (
-		func (): 
-			if Data.lamp_unscrewed:
-				return "It says, 'Monkeys always look'.";
-			else:
-				return "No object 'piece of paper' around to look at.";
-			));
+	.add_basic_interaction("look", "It says, 'Monkeys always look'.")\
+	.is_revealed_by("lamp_unscrewed")
 			
 var left_sign = Interactable.new("sign")\
-	.add_interaction("look", (
-		func (): 
-			return "It says, 'Welcome to the Right Room!'"
-			));
+	.add_basic_interaction("look", "It says, 'Welcome to the Right Room!'");
 
 func _ready() -> void:
+	super();
 	interactables = ["lamp", "piece of paper", "sign"];
 	room_interactables.add_interactables([
 		lamp,
@@ -43,6 +36,6 @@ func _ready() -> void:
 
 func look() -> String:
 	if Data.lamp_on:
-		return "There is a [sign] on the wall. There is a [lamp] on the table. It is switched on. A door to the east leads to the Left Room."
+		return "There is a [sign] on the wall. There is a [lamp] on the table. It is switched on. A door to the west leads to the Left Room."
 	else:
-		return "There is a [sign] on the wall. There is a [lamp] on the table. It is switched off. A door to the east leads to the Left Room.";
+		return "There is a [sign] on the wall. There is a [lamp] on the table. It is switched off. A door to the west leads to the Left Room.";

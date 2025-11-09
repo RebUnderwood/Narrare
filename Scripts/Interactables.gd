@@ -1,4 +1,4 @@
-extends InteractablesInterface
+extends InteractablesBase
 
 # === INTERACTABLES ===
 #

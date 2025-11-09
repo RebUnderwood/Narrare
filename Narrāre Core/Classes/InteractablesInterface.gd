@@ -25,3 +25,11 @@ func attempt_interaction(interactable_identifier: String, interaction_identifier
 		return null;
 	else:
 		return gotten_interactable.attempt_interaction(interaction_identifier, args)
+
+func trigger_command_triggers(command_string: String) -> String:
+	var out: String = "";
+	for interactable in get_all_interactables():
+		var addition: Variant = interactable.on_command_trigger.call(command_string);
+		if addition is String:
+			out += addition;
+	return out;

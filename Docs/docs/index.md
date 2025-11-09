@@ -4,6 +4,8 @@ A Godot-based framework for making text-based adventure games and interactive fi
 
 <h2 align="center"><a href="https://github.com/RebUnderwood/Narrare">Get Narrāre!</a></h2>
 
+# Warning: These docs are outdated! The dev is currently working to update them; we appreciate your patience.
+
 ![Screenshot](img/narrare_screenshot.jpg)
 
 Back in Ye Olden Days, games like [Zork](https://en.wikipedia.org/wiki/Zork) and [Anchorhead](https://en.wikipedia.org/wiki/Anchorhead) used the medium of text to create elaborate, interactive worlds. Through intuitive, natural language, players could interact with these worlds naturally, exploring them at their whim.

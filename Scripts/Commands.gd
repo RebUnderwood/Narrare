@@ -60,34 +60,6 @@ extends CommandsBase
 # This script is a global and can be accessed using 'Commands'.
 # To parse a command, use 'Commands.parse_command(input_string)'.
 
-var echo_callable: Callable = (
-	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String: 
-		var out: String = ""
-		var echo_phrase: String = matches.get_string("phrase_group");
-		if echo_phrase.is_empty():
-			out = "Echo what?";
-		else:
-			out = echo_phrase;
-		return out;
-		);
-var echo_command = Command.new("^echo ?(?'phrase_group'.+)?", echo_callable);
-
-func _ready() -> void:
-	set_command_stack([
-		echo_command,
-		then_command,
-		look_command,
-		go_command,
-		take_command,
-		use_command,
-		say_command,
-		inventory_command,
-		save_command,
-		load_command,
-		help_command,
-		quit_command,
-	]);
-	
 const HELP_TEXT: String = (
 	"----------------------------[b]HELP[/b]----------------------------\n" 
 	+ "In the following list, segments of commands surrounded by\n"
@@ -114,6 +86,18 @@ const HELP_TEXT: String = (
 	+ "------------------------------------------------------------"
 );
 
+var echo_callable: Callable = (
+	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String: 
+		var out: String = ""
+		var echo_phrase: String = matches.get_string("phrase_group");
+		if echo_phrase.is_empty():
+			out = "Echo what?";
+		else:
+			out = echo_phrase;
+		return out;
+		);
+var echo_command = Command.new("echo", "^echo ?(?'phrase_group'.+)?", echo_callable);
+	
 var then_callable: Callable = (
 	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String:
 		var out: String = "";
@@ -127,7 +111,7 @@ var then_callable: Callable = (
 			out = "'Then' needs two commands.";
 		return out;
 );
-var then_command = Command.new("(?'first_command'.+) then (?'second_command'.+)", then_callable);
+var then_command = Command.new("then", "(?'first_command'.+) then (?'second_command'.+)", then_callable);
 
 var look_callable: Callable = (
 	func(interactables: InteractablesInterface, matches: RegExMatch) -> String: 
@@ -148,7 +132,7 @@ var look_callable: Callable = (
 				Narrare.previous_text_displayed = out;
 		return out;
 		);
-var look_command = Command.new("^look(?: (?'has_at'at))?(?: (?'at_group'[\\w ]+))?", look_callable);
+var look_command = Command.new("look", "^look(?: (?'has_at'at))?(?: (?'at_group'[\\w ]+))?", look_callable);
 
 var go_callable: Callable = (
 	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String:
@@ -183,7 +167,7 @@ var go_callable: Callable = (
 				out = "There is no exit in that direction.";
 		return out;
 		);		
-var go_command = Command.new("^go ?(?'direction_group'[\\w]+)?", go_callable);
+var go_command = Command.new("go", "^go ?(?'direction_group'[\\w]+)?", go_callable);
 
 
 var take_callable: Callable = (
@@ -201,7 +185,7 @@ var take_callable: Callable = (
 				Narrare.previous_text_displayed = out;
 		return out;
 		);
-var take_command = Command.new("^take(?: (?'take_group'[\\w ]+))?", take_callable);
+var take_command = Command.new("take", "^take(?: (?'take_group'[\\w ]+))?", take_callable);
 
 var use_callable: Callable = (
 	func(interactables: InteractablesInterface, matches: RegExMatch) -> String: 
@@ -235,7 +219,7 @@ var use_callable: Callable = (
 		return out;
 		);
 		
-var use_command = Command.new("^use (?'use_group'[ \\w]+)(?'has_on' on ?)(?'on_group'[ \\w]+)?|use ?(?'use_single_group'[ \\w]+)?", use_callable);
+var use_command = Command.new("use", "^use (?'use_group'[ \\w]+)(?'has_on' on ?)(?'on_group'[ \\w]+)?|use ?(?'use_single_group'[ \\w]+)?", use_callable);
 
 var say_callable: Callable = (
 	func(interactables: InteractablesInterface, matches: RegExMatch) -> String:
@@ -255,7 +239,7 @@ var say_callable: Callable = (
 				out += "No response."
 		return out.trim_suffix("\n\n");
 		);
-var say_command = Command.new("^say ?(?'phrase_group'.+)?", say_callable);
+var say_command = Command.new("say", "^say ?(?'phrase_group'.+)?", say_callable);
 
 var inventory_callable: Callable = (
 	func(_interactables: InteractablesInterface, _matches: RegExMatch) -> String:
@@ -269,7 +253,7 @@ var inventory_callable: Callable = (
 		out += "-------------------------------------------------";
 		return out;
 );
-var inventory_command = Command.new("inventory", inventory_callable);
+var inventory_command = Command.new("inventory", "inventory", inventory_callable);
 
 var save_callable: Callable = (
 	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String:
@@ -283,7 +267,7 @@ var save_callable: Callable = (
 		else:
 			return "Saved game as '%s' in slot %d." % [save_name.replace_char('-'.unicode_at(0), ' '.unicode_at(0)), result];
 );
-var save_command = Command.new("^save ?(?'save_name'[\\w ]+)?", save_callable);
+var save_command = Command.new("save", "^save ?(?'save_name'[\\w ]+)?", save_callable);
 
 var load_callable: Callable = (
 	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String:
@@ -324,13 +308,13 @@ var load_callable: Callable = (
 				out = "Save number was not a valid integer.";
 		return out;
 );
-var load_command = Command.new("^load ?(?'load_number'[\\w]+)?", load_callable);
+var load_command = Command.new("load", "^load ?(?'load_number'[\\w]+)?", load_callable);
 
 var help_callable: Callable = (
 	func(_interactables: InteractablesInterface, _matches: RegExMatch) -> String:
 		return HELP_TEXT;
 );
-var help_command = Command.new("^help", help_callable);
+var help_command = Command.new("help", "^help", help_callable);
 
 var quit_callable: Callable = (
 	func(_interactables: InteractablesInterface, _matches: RegExMatch) -> String:
@@ -344,4 +328,20 @@ var quit_callable: Callable = (
 				))
 		return Narrare.current_prompt.get_display_string();
 );
-var quit_command = Command.new("^quit", quit_callable);
+var quit_command = Command.new("quit", "^quit", quit_callable);
+
+func _ready() -> void:
+	set_command_stack([
+		echo_command,
+		then_command,
+		look_command,
+		go_command,
+		take_command,
+		use_command,
+		say_command,
+		inventory_command,
+		save_command,
+		load_command,
+		help_command,
+		quit_command,
+	]);

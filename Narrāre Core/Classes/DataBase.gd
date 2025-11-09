@@ -12,6 +12,9 @@ func remove_from_inventory(item_name: String) -> bool:
 func get_inventory() -> PackedStringArray:
 	return player_inventory;
 	
+func has_in_inventory(identifier: String) -> bool:
+	return player_inventory.has(identifier);
+	
 func to_dict() -> Dictionary:
 	var thisScript: GDScript = get_script();
 	var data_dict: Dictionary = {};

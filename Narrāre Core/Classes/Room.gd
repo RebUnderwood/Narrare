@@ -1,39 +1,29 @@
 extends Node
 class_name Room
 
-@export_group("Exits")
-@export var exit_north: Room = null;
-@export var exit_northwest: Room = null;
-@export var exit_west: Room = null;
-@export var exit_southwest: Room = null;
-@export var exit_south: Room = null;
-@export var exit_southeast: Room = null;
-@export var exit_east: Room = null;
-@export var exit_northeast: Room = null;
-@export var exit_up: Room = null;
-@export var exit_down: Room = null;
-
-@export_group("Entrance Text")
-@export var entry_description: String = "";
-@export var enter_north_text: String = "";
-@export var enter_northwest_text: String = "";
-@export var enter_west_text: String = "";
-@export var enter_southwest_text: String = "";
-@export var enter_south_text: String = "";
-@export var enter_southeast_text: String = "";
-@export var enter_east_text: String = "";
-@export var enter_northeast_text: String = "";
-@export var enter_up_text: String = "";
-@export var enter_down_text: String = "";
+var exit_north: Exit = null;
+var exit_northwest: Exit = null;
+var exit_west: Exit = null;
+var exit_southwest: Exit = null;
+var exit_south: Exit = null;
+var exit_southeast: Exit = null;
+var exit_east: Exit = null;
+var exit_northeast: Exit = null;
+var exit_up: Exit = null;
+var exit_down: Exit = null;
 
 @export_group("Contents")
 @export var room_name: String = "";
-@export var look_description: String = "";
+@export_multiline var look_description: String = "";
+@export_multiline var entry_description: String = "";
 @export var interactables: Array[String] = [];
 
 var room_interactables: InteractablesInterface = InteractablesInterface.new();
 
-func get_room_in_direction(direction: Narrare.Direction) -> Room:
+func _ready() -> void:
+	_register_exits();
+	
+func get_exit_in_direction(direction: Narrare.Direction) -> Exit:
 	match direction:
 		Narrare.Direction.NORTH:
 			return exit_north;
@@ -57,33 +47,12 @@ func get_room_in_direction(direction: Narrare.Direction) -> Room:
 			return exit_down;
 		_:
 			return null;
-			
+
 func look() -> String:
 	return look_description;
 
-func enter(from: Room) -> String:
+func describe_entering() -> String:
 	var out: String = "[b]%s[/b]\n" % room_name;
-	match from:
-		exit_north:
-			out += enter_north_text + " ";
-		exit_northwest:
-			out += enter_northwest_text + " ";
-		exit_west:
-			out += enter_west_text + " ";
-		exit_southwest:
-			out += enter_southwest_text + " ";
-		exit_south:
-			out += enter_south_text + " ";
-		exit_southeast:
-			out += enter_southeast_text + " ";
-		exit_east:
-			out += enter_east_text + " ";
-		exit_northeast:
-			out += enter_northeast_text + " ";
-		exit_up:
-			out += enter_up_text + " ";
-		exit_down:
-			out += enter_down_text + " ";
 	if !entry_description.is_empty():
 		out += entry_description + " ";
 	out += look();
@@ -94,3 +63,32 @@ func enter_trigger() -> void:
 	
 func exit_trigger() -> void:
 	pass;
+
+func _register_exits() -> void:
+	for child in get_children():
+		if child is Exit:
+			child.set_room(self);
+			match child.direction:
+				Narrare.Direction.NORTH:
+					exit_north = child;
+				Narrare.Direction.NORTHWEST:
+					exit_northwest = child;
+				Narrare.Direction.WEST:
+					exit_west = child; 
+				Narrare.Direction.SOUTHWEST:
+					exit_southwest = child;
+				Narrare.Direction.SOUTH:
+					exit_south = child;
+				Narrare.Direction.SOUTHEAST:
+					exit_southeast = child;
+				Narrare.Direction.EAST:
+					exit_east = child;
+				Narrare.Direction.NORTHEAST:
+					exit_northeast = child;
+				Narrare.Direction.UP:
+					exit_up = child;
+				Narrare.Direction.DOWN:
+					exit_down = child;
+				_:
+					pass;
+			

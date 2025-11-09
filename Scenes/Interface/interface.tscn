@@ -46,4 +46,5 @@ theme = ExtResource("5_dukh4")
 text = ">"
 vertical_alignment = 1
 
+[connection signal="text_changed" from="VBoxContainer/CommandInput" to="." method="_on_command_input_text_changed"]
 [connection signal="text_submitted" from="VBoxContainer/CommandInput" to="." method="_on_command_input_text_submitted"]

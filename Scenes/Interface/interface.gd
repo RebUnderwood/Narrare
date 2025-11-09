@@ -104,3 +104,7 @@ func _on_input_request_changed(is_input_request: bool) -> void:
 		command_input.placeholder_text = "Type your answer.";
 	else:
 		command_input.placeholder_text = input_placeholder_text;
+
+
+func _on_command_input_text_changed(new_text: String) -> void:
+	Narrare.input_text_changed.emit(new_text);

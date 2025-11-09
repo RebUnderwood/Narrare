@@ -3,13 +3,19 @@ extends Node
 enum Direction {NONE, NORTH, NORTHWEST, WEST, SOUTHWEST, SOUTH, SOUTHEAST, EAST, NORTHEAST, UP, DOWN}
 
 signal say_something(message: String);
+signal input_something(message: String, clear: bool);
+signal set_enable_input(enable: bool);
 signal clear_output;
 @warning_ignore("unused_signal")
 signal done_writing_to_output;
 @warning_ignore("unused_signal")
 signal done_writing_to_input;
+@warning_ignore("unused_signal")
+signal input_text_changed(text: String);
 signal prompt_changed(is_prompt: bool);
 signal input_request_changed(is_input_request: bool);
+signal loaded_game();
+signal game_over();
 
 var map: Map;
 var previous_text_displayed: String = "";
@@ -29,8 +35,41 @@ func say(message: String) -> void:
 func clear() -> void:
 	clear_output.emit();
 	
+func say_to_input(message: String, in_clear: bool = true) -> void:
+	input_something.emit(message, in_clear);
+	
+func disable_input() -> void:
+	set_enable_input.emit(false);
+	
+func enable_input() -> void:
+	set_enable_input.emit(true);
+	
 func set_map(in_map: Map) -> void:
 	map = in_map;
+	
+func collect_available_interactables() -> InteractablesInterface:
+	var interactables: InteractablesInterface = InteractablesInterface.new();
+	for interactable_name in Narrare.map.current_room.interactables:
+		var interactable = Interactables.get_interactable(interactable_name);
+		
+		if interactable != null:
+			interactables.add_interactable(interactable);
+		else:
+			var room_interactable = Narrare.map.current_room.room_interactables.get_interactable(interactable_name);
+			if room_interactable != null:
+				interactables.add_interactable(room_interactable);
+	for interactable_name in Data.player_inventory:
+		var interactable = Interactables.get_interactable(interactable_name);
+		if interactable != null:
+			interactables.add_interactable(interactable);
+	for interactable_name in Interactables.get_global_interactables():
+		var interactable = Interactables.get_interactable(interactable_name);
+		if interactable != null:
+			interactables.add_interactable(interactable);
+	return interactables;
+	
+func trigger_game_over() -> void:
+	game_over.emit();
 
 # === Saving and Loading ===
 func save(save_name: String = "-----") -> int:
@@ -47,6 +86,8 @@ func save(save_name: String = "-----") -> int:
 		"current_room": map.current_room.room_name,
 		"previous_text_displayed": previous_text_displayed,
 		"data": Data.to_dict(),
+		"global_interactables": Interactables.get_global_interactables(),
+		"restricted_commands": Commands.get_restricted_commands()
 	};
 	var json_save: String = JSON.stringify(save_dict);
 	var save_num = existing_saves.size();
@@ -103,12 +144,13 @@ func load_save(save_number: String) -> Dictionary:
 					print("JSON Parse Error: ", json.get_error_message(), " at line ", json.get_error_line());
 					return {"err": ERR_INVALID_DATA, "out": out_str};
 				var save_data = json.data;
-				if !save_data.has("data") || !save_data.has("save_name") || !save_data.has("current_room"):
+				if !save_data.has("data") || !save_data.has("save_name") || !save_data.has("current_room") || !save_data.has("global_interactables") || !save_data.has("restricted_commands"):
 					return {"err": ERR_INVALID_DATA, "out": out_str};
 				if map.set_current_room_by_name(save_data.current_room) != OK:
 					return {"err": ERR_INVALID_DATA, "out": out_str};
 				Data.from_dict(save_data.data);
-				
+				Interactables.set_global_interactables(Array(save_data.global_interactables, TYPE_STRING, "", null));
+				Commands.set_restricted_commands(Array(save_data.restricted_commands, TYPE_STRING, "", null));
 				out_str = "Loaded save %s: %s\n\n" % [save_number, save_data.save_name.replace_char('-'.unicode_at(0), ' '.unicode_at(0))];
 				if save_data.has("previous_text_displayed"):
 					out_str += save_data.previous_text_displayed;
@@ -118,4 +160,5 @@ func load_save(save_number: String) -> Dictionary:
 			out_str = "There were no saves matching that number to load.";
 		else:
 			data_saved = true;
+	loaded_game.emit();
 	return {"err": OK, "out": out_str};
