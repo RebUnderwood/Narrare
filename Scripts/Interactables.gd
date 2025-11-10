@@ -31,7 +31,8 @@ extends InteractablesBase
 # will be overwritten.
 
 var screwdriver = Interactable.new("screwdriver")\
-	.add_interaction("look", func () -> String: return "It's a plain phillips head screwdriver.")\
+	.add_synonyms("phillips-head", "phillips head")\
+	.add_basic_interaction("look", "It's a plain phillips head screwdriver.")\
 	.add_interaction("use", (
 		func (used_on: String) -> String: 
 			match used_on:

@@ -13,7 +13,8 @@ func get_all_interactables() -> Array[Interactable]:
 	return _objs.values();
 	
 func add_interactable(in_interactable: Interactable) -> void:
-	_objs[in_interactable.identifier] = in_interactable;
+	for identifier in in_interactable.identifiers:
+		_objs[identifier] = in_interactable;
 
 func add_interactables(in_interactables: Array[Interactable]) -> void:
 	for interactable in in_interactables:

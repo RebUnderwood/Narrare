@@ -132,16 +132,25 @@ var look_callable: Callable = (
 				Narrare.previous_text_displayed = out;
 		return out;
 		);
-var look_command = Command.new("look", "^look(?: (?'has_at'at))?(?: (?:the|a))?(?: (?'at_group'.+))?", look_callable)\
-	.add_synonym("^examine(?: (?'has_at'at))?(?: (?:the|a))?(?: (?'at_group'.+))?")\
-	.add_synonym("^x(?: (?'has_at'at))?(?: (?:the|a))?(?: (?'at_group'.+))?");
+var look_command = Command.new("look", "^look(?: (?'has_at'at))?(?: (?:the|an|a))?(?: (?'at_group'.+))?", look_callable)\
+	.add_synonym("^examine(?:(?: (?:the|an|a))?(?: (?'at_group'.+))?)")\
+	.add_synonym("^x(?:(?: (?:the|an|a))?(?: (?'at_group'.+))?)");
 
+func travel (direction: Narrare.Direction) -> Variant:
+	var out: String = "";
+	var go_result: Variant = Narrare.map.navigate(direction);
+	if go_result != null:
+		out = go_result;
+		Narrare.previous_text_displayed = out;
+	else:
+		out = "There is no exit in that direction.";
+	return out;
+	
 var go_callable: Callable = (
 	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String:
-		var out: String = "";
 		var direction_string: String = matches.get_string("direction_group");
 		if direction_string.is_empty():
-			out = "Go what direction?";
+			return "Go what direction?";
 		else:
 			var direction: Narrare.Direction = Narrare.Direction.NONE;
 			match direction_string:
@@ -161,18 +170,48 @@ var go_callable: Callable = (
 					direction = Narrare.Direction.EAST;
 				"northeast":
 					direction = Narrare.Direction.NORTHEAST;
-			var go_result: Variant = Narrare.map.navigate(direction);
-			if go_result != null:
-				out = go_result;
-				Narrare.previous_text_displayed = out;
-			else:
-				out = "There is no exit in that direction.";
-		return out;
+				"up":
+					direction = Narrare.Direction.UP;
+				"down":
+					direction = Narrare.Direction.DOWN;
+				_:
+					return "What kind of direction is that supposed to be?";
+			return travel(direction);
 		);		
 var go_command = Command.new("go", "^go ?(?'direction_group'[\\w]+)?", go_callable)\
 	.add_synonym("^walk ?(?'direction_group'[\\w]+)?")\
-	.add_synonym("^head ?(?'direction_group'[\\w]+)?");
+	.add_synonym("^head ?(?'direction_group'[\\w]+)?")\
+	.add_synonym("^run ?(?'direction_group'[\\w]+)?");
+	
+var north_command = Command.new("north", "^north", func(_a, _b) -> Variant: return travel(Narrare.Direction.NORTH))\
+	.add_synonym("^n");
 
+var northeast_command = Command.new("northeast", "^northeast", func(_a, _b) -> Variant: return travel(Narrare.Direction.NORTHEAST))\
+	.add_synonym("^ne");
+
+var east_command = Command.new("east", "^east", func(_a, _b) -> Variant: return travel(Narrare.Direction.EAST))\
+	.add_synonym("^e");
+	
+var southeast_command = Command.new("southeast", "^southeast", func(_a, _b) -> Variant: return travel(Narrare.Direction.SOUTHEAST))\
+	.add_synonym("^se");
+	
+var south_command = Command.new("south", "^south", func(_a, _b) -> Variant: return travel(Narrare.Direction.SOUTH))\
+	.add_synonym("^s");
+
+var southwest_command = Command.new("southwest", "^southwest", func(_a, _b) -> Variant: return travel(Narrare.Direction.SOUTHWEST))\
+	.add_synonym("^sw");
+	
+var west_command = Command.new("west", "^west", func(_a, _b) -> Variant: return travel(Narrare.Direction.WEST))\
+	.add_synonym("^w");
+	
+var northwest_command = Command.new("northwest", "^northwest", func(_a, _b) -> Variant: return travel(Narrare.Direction.NORTHWEST))\
+	.add_synonym("^nw");
+	
+var up_command = Command.new("up", "^up", func(_a, _b) -> Variant: return travel(Narrare.Direction.UP))\
+	.add_synonym("^u");
+	
+var down_command = Command.new("down", "^down", func(_a, _b) -> Variant: return travel(Narrare.Direction.DOWN))\
+	.add_synonym("^d");
 
 var take_callable: Callable = (
 	func(interactables: InteractablesInterface, matches: RegExMatch) -> String: 
@@ -189,8 +228,8 @@ var take_callable: Callable = (
 				Narrare.previous_text_displayed = out;
 		return out;
 		);
-var take_command = Command.new("take", "^take(?:(?: (?:the|a))? (?'take_group'.+))?", take_callable)\
-	.add_synonym("^pick up(?:(?: (?:the|a))? (?'take_group'.+))?")
+var take_command = Command.new("take", "^take(?:(?: (?:the|an|a))? (?'take_group'.+))?", take_callable)\
+	.add_synonym("^pick up(?:(?: (?:the|an|a))? (?'take_group'.+))?")
 
 var use_callable: Callable = (
 	func(interactables: InteractablesInterface, matches: RegExMatch) -> String: 
@@ -201,10 +240,14 @@ var use_callable: Callable = (
 			var on_object: String = matches.get_string("on_group");
 			if on_object.is_empty():
 				out = "Use " + use_object + " on what?";
-			elif interactables.get_interactable(on_object) == null:
-				out = "No '%s' to use that on." % on_object;
+			var on_interactable = interactables.get_interactable(on_object);
+			var use_interactable = interactables.get_interactable(use_object);
+			if on_interactable == null || on_interactable.is_hidden():
+				out = "There's no '%s' around to use that on." % on_object;
+			elif use_interactable == null || use_interactable.is_hidden():
+				out = "There's no '%s' around to use on that." % use_object;
 			else:
-				var result: Variant = interactables.attempt_interaction(use_object, "use", on_object);
+				var result: Variant = interactables.attempt_interaction(on_object, "use", use_interactable.primary_identifier);
 				if result == null:
 					out = "You're not sure how to use that on that."
 				else:
@@ -222,9 +265,8 @@ var use_callable: Callable = (
 					out = result;
 					Narrare.previous_text_displayed = out;
 		return out;
-		);
-		
-var use_command = Command.new("use", "^use(?: (?:the|a))? (?'use_group'.+)(?'has_on' on(?: (?:the|a))? ?)(?'on_group'.+)?|use(?: (?:the|a))? ?(?'use_single_group'.+)?", use_callable);
+		);	
+var use_command = Command.new("use", "^use(?: (?:the|an|a))? (?'use_group'.+)(?'has_on' on(?: (?:the|an|a))? ?)(?'on_group'.+)?|use(?: (?:the|an|a))? ?(?'use_single_group'.+)?", use_callable);
 
 var say_callable: Callable = (
 	func(interactables: InteractablesInterface, matches: RegExMatch) -> String:
@@ -342,6 +384,16 @@ func _ready() -> void:
 		then_command,
 		look_command,
 		go_command,
+		north_command,
+		northeast_command,
+		east_command,
+		southeast_command,
+		south_command,
+		southwest_command,
+		west_command,
+		northwest_command,
+		up_command,
+		down_command,
 		take_command,
 		use_command,
 		say_command,

@@ -1,6 +1,7 @@
 extends Room
 
 var lamp = Interactable.new("lamp")\
+	.add_synonyms("light", "desk lamp")\
 	.add_interaction("look", (
 		func ():
 			if Data.lamp_on:
@@ -9,13 +10,24 @@ var lamp = Interactable.new("lamp")\
 				return "The lamp is off. You can use 'use' to switch it on. The bottom of the lamp is held on by screws.";
 			))\
 	.add_interaction("use", (
-		func (_used_on: String):
-			if Data.lamp_on: 
-				Data.lamp_on = false;
-				return "You switch the lamp off.";
-			else:
-				Data.lamp_on = true;
-				return "You switch the lamp on.";
+		func (used_with: String) -> String: 
+			match used_with:
+				"screwdriver":
+					if !Data.lamp_unscrewed:
+						Data.lamp_unscrewed = true;
+						return "You unscrew the base of the [lamp] using the [screwdriver].\nInside was a [piece of paper].";
+					else:
+						return "You already unscrewed the [lamp].";
+				"":
+					if Data.lamp_on: 
+						Data.lamp_on = false;
+						return "You switch the lamp off.";
+					else:
+						Data.lamp_on = true;
+						return "You switch the lamp on.";
+				_:
+					return "You're not sure how to use the [lamp] with that.'";
+					
 			));
 
 var piece_of_paper = Interactable.new("piece of paper")\

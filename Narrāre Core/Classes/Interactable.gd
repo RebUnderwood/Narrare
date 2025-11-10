@@ -1,7 +1,8 @@
 extends Node
 class_name Interactable
 
-var identifier: String;
+var primary_identifier: String;
+var identifiers: Array[String];
 var specifier: String;
 
 var _interactions: Dictionary[String, Callable] = {}
@@ -10,10 +11,11 @@ var on_load_trigger: Callable = func() -> Variant: return null;
 var _revealed_by: Array = [];
 
 func _init(in_identifier: String, in_specifier: String = in_identifier) -> void:
-	identifier = in_identifier;
+	primary_identifier = in_identifier;
+	identifiers = [in_identifier];
 	specifier = in_specifier;
 	
-func _is_hidden() -> bool:
+func is_hidden() -> bool:
 	for reveal_condition in _revealed_by:
 		if Data.get(reveal_condition):
 			return false;
@@ -24,6 +26,10 @@ func _is_hidden() -> bool:
 func is_revealed_by(...data_condition: Array) -> Interactable:
 	_revealed_by = data_condition;
 	return self;
+	
+func add_synonyms(...synonymous_identifiers: Array) -> Interactable:
+	identifiers.append_array(synonymous_identifiers);
+	return self;
 		
 func add_interaction(interaction_identifier: String, interaction: Callable) -> Interactable:
 	_interactions[interaction_identifier] = interaction;
@@ -32,7 +38,7 @@ func add_interaction(interaction_identifier: String, interaction: Callable) -> I
 func add_basic_interaction(interaction_identifier: String, result: String) -> Interactable:
 	_interactions[interaction_identifier] = (
 		func(..._a) -> Variant: 
-			if _is_hidden():
+			if is_hidden():
 				return null;
 			return result;
 			);
@@ -41,7 +47,7 @@ func add_basic_interaction(interaction_identifier: String, result: String) -> In
 func add_basic_conditional_interaction(interaction_identifier: String, data_condition: String, true_result: Variant, false_result: Variant) -> Interactable:
 	_interactions[interaction_identifier] = (
 		func(..._a) -> Variant: 
-			if _is_hidden():
+			if is_hidden():
 				return null;
 			if Data.get(data_condition):
 				return true_result
