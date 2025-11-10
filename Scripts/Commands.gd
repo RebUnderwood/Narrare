@@ -132,7 +132,9 @@ var look_callable: Callable = (
 				Narrare.previous_text_displayed = out;
 		return out;
 		);
-var look_command = Command.new("look", "^look(?: (?'has_at'at))?(?: (?'at_group'[\\w ]+))?", look_callable);
+var look_command = Command.new("look", "^look(?: (?'has_at'at))?(?: (?:the|a))?(?: (?'at_group'.+))?", look_callable)\
+	.add_synonym("^examine(?: (?'has_at'at))?(?: (?:the|a))?(?: (?'at_group'.+))?")\
+	.add_synonym("^x(?: (?'has_at'at))?(?: (?:the|a))?(?: (?'at_group'.+))?");
 
 var go_callable: Callable = (
 	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String:
@@ -167,7 +169,9 @@ var go_callable: Callable = (
 				out = "There is no exit in that direction.";
 		return out;
 		);		
-var go_command = Command.new("go", "^go ?(?'direction_group'[\\w]+)?", go_callable);
+var go_command = Command.new("go", "^go ?(?'direction_group'[\\w]+)?", go_callable)\
+	.add_synonym("^walk ?(?'direction_group'[\\w]+)?")\
+	.add_synonym("^head ?(?'direction_group'[\\w]+)?");
 
 
 var take_callable: Callable = (
@@ -185,7 +189,8 @@ var take_callable: Callable = (
 				Narrare.previous_text_displayed = out;
 		return out;
 		);
-var take_command = Command.new("take", "^take(?: (?'take_group'[\\w ]+))?", take_callable);
+var take_command = Command.new("take", "^take(?:(?: (?:the|a))? (?'take_group'.+))?", take_callable)\
+	.add_synonym("^pick up(?:(?: (?:the|a))? (?'take_group'.+))?")
 
 var use_callable: Callable = (
 	func(interactables: InteractablesInterface, matches: RegExMatch) -> String: 
@@ -219,7 +224,7 @@ var use_callable: Callable = (
 		return out;
 		);
 		
-var use_command = Command.new("use", "^use (?'use_group'[ \\w]+)(?'has_on' on ?)(?'on_group'[ \\w]+)?|use ?(?'use_single_group'[ \\w]+)?", use_callable);
+var use_command = Command.new("use", "^use(?: (?:the|a))? (?'use_group'.+)(?'has_on' on(?: (?:the|a))? ?)(?'on_group'.+)?|use(?: (?:the|a))? ?(?'use_single_group'.+)?", use_callable);
 
 var say_callable: Callable = (
 	func(interactables: InteractablesInterface, matches: RegExMatch) -> String:
@@ -253,7 +258,8 @@ var inventory_callable: Callable = (
 		out += "-------------------------------------------------";
 		return out;
 );
-var inventory_command = Command.new("inventory", "inventory", inventory_callable);
+var inventory_command = Command.new("inventory", "^inventory", inventory_callable)\
+	.add_synonym("^i")
 
 var save_callable: Callable = (
 	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String:
@@ -267,7 +273,7 @@ var save_callable: Callable = (
 		else:
 			return "Saved game as '%s' in slot %d." % [save_name.replace_char('-'.unicode_at(0), ' '.unicode_at(0)), result];
 );
-var save_command = Command.new("save", "^save ?(?'save_name'[\\w ]+)?", save_callable);
+var save_command = Command.new("save", "^save ?(?'save_name'.+)?", save_callable);
 
 var load_callable: Callable = (
 	func(_interactables: InteractablesInterface, matches: RegExMatch) -> String:
@@ -308,7 +314,7 @@ var load_callable: Callable = (
 				out = "Save number was not a valid integer.";
 		return out;
 );
-var load_command = Command.new("load", "^load ?(?'load_number'[\\w]+)?", load_callable);
+var load_command = Command.new("load", "^load ?(?'load_number'.+)?", load_callable);
 
 var help_callable: Callable = (
 	func(_interactables: InteractablesInterface, _matches: RegExMatch) -> String:
