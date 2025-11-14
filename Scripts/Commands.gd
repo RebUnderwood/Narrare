@@ -183,35 +183,35 @@ var go_command = Command.new("go", "^go ?(?'direction_group'[\\w]+)?", go_callab
 	.add_synonym("^head ?(?'direction_group'[\\w]+)?")\
 	.add_synonym("^run ?(?'direction_group'[\\w]+)?");
 	
-var north_command = Command.new("north", "^north", func(_a, _b) -> Variant: return travel(Narrare.Direction.NORTH))\
-	.add_synonym("^n");
+var north_command = Command.new("north", "^north$", func(_a, _b) -> Variant: return travel(Narrare.Direction.NORTH))\
+	.add_synonym("^n$");
 
-var northeast_command = Command.new("northeast", "^northeast", func(_a, _b) -> Variant: return travel(Narrare.Direction.NORTHEAST))\
-	.add_synonym("^ne");
+var northeast_command = Command.new("northeast", "^northeast$", func(_a, _b) -> Variant: return travel(Narrare.Direction.NORTHEAST))\
+	.add_synonym("^ne$");
 
-var east_command = Command.new("east", "^east", func(_a, _b) -> Variant: return travel(Narrare.Direction.EAST))\
-	.add_synonym("^e");
+var east_command = Command.new("east", "^east$", func(_a, _b) -> Variant: return travel(Narrare.Direction.EAST))\
+	.add_synonym("^e$");
 	
-var southeast_command = Command.new("southeast", "^southeast", func(_a, _b) -> Variant: return travel(Narrare.Direction.SOUTHEAST))\
-	.add_synonym("^se");
+var southeast_command = Command.new("southeast", "^southeast$", func(_a, _b) -> Variant: return travel(Narrare.Direction.SOUTHEAST))\
+	.add_synonym("^se$");
 	
-var south_command = Command.new("south", "^south", func(_a, _b) -> Variant: return travel(Narrare.Direction.SOUTH))\
-	.add_synonym("^s");
+var south_command = Command.new("south", "^south$", func(_a, _b) -> Variant: return travel(Narrare.Direction.SOUTH))\
+	.add_synonym("^s$");
 
-var southwest_command = Command.new("southwest", "^southwest", func(_a, _b) -> Variant: return travel(Narrare.Direction.SOUTHWEST))\
-	.add_synonym("^sw");
+var southwest_command = Command.new("southwest", "^southwest$", func(_a, _b) -> Variant: return travel(Narrare.Direction.SOUTHWEST))\
+	.add_synonym("^sw$");
 	
-var west_command = Command.new("west", "^west", func(_a, _b) -> Variant: return travel(Narrare.Direction.WEST))\
-	.add_synonym("^w");
+var west_command = Command.new("west", "^west$", func(_a, _b) -> Variant: return travel(Narrare.Direction.WEST))\
+	.add_synonym("^w$");
 	
-var northwest_command = Command.new("northwest", "^northwest", func(_a, _b) -> Variant: return travel(Narrare.Direction.NORTHWEST))\
-	.add_synonym("^nw");
+var northwest_command = Command.new("northwest", "^northwest$", func(_a, _b) -> Variant: return travel(Narrare.Direction.NORTHWEST))\
+	.add_synonym("^nw$");
 	
-var up_command = Command.new("up", "^up", func(_a, _b) -> Variant: return travel(Narrare.Direction.UP))\
-	.add_synonym("^u");
+var up_command = Command.new("up", "^up$", func(_a, _b) -> Variant: return travel(Narrare.Direction.UP))\
+	.add_synonym("^u$");
 	
-var down_command = Command.new("down", "^down", func(_a, _b) -> Variant: return travel(Narrare.Direction.DOWN))\
-	.add_synonym("^d");
+var down_command = Command.new("down", "^down$", func(_a, _b) -> Variant: return travel(Narrare.Direction.DOWN))\
+	.add_synonym("^d$");
 
 var take_callable: Callable = (
 	func(interactables: InteractablesInterface, matches: RegExMatch) -> String: 
