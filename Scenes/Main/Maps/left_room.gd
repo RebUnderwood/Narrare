@@ -10,7 +10,7 @@ var echo = Interactable.new("echo")\
 			return "The echo says, \"%s\"." % phrase;
 			));
 
-var sign = Interactable.new("sign")\
+var wall_sign = Interactable.new("sign")\
 	.add_basic_interaction("look", "It says, 'Welcome to the Left Room!'")\
 	.add_interaction_synonym("read", "look");
 
@@ -19,11 +19,13 @@ func _ready() -> void:
 	add_interactables(
 		"screwdriver",
 		echo,
-		sign,
+		wall_sign,
 	);
 	add_state("screwdriver_taken")\
 		.set_look_description("There is an echo in here. There is a |sign| on the wall. An empty table sits in the corner. A door to the east leads to the Right Room.")\
 		.add_interactables(
 			echo,
-			sign,
+			wall_sign,
 		);
+	if Data.screwdriver_taken:
+		set_state("screwdriver_taken");

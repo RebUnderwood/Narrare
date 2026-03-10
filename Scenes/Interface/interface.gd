@@ -43,7 +43,8 @@ func get_text() -> String:
 	return text_output.text;
 	
 func clear_text() -> void:
-	text_output.clear();
+	text_output.text = "";
+	text_output.visible_characters = -1;
 	
 func write_to_input(message: String, typewriter_effect: bool = false, speed_scale: float = 1.0) -> void:
 	command_input.text = "";

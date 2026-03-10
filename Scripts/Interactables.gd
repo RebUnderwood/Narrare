@@ -38,7 +38,7 @@ var screwdriver = Interactable.new("screwdriver")\
 			if !Data.screwdriver_taken:
 				Data.screwdriver_taken = true;
 				Data.add_to_inventory("screwdriver");
-				Narrare.map.get_current_room().set_current_state("screwdriver_taken");
+				Narrare.map.get_current_room().set_state("screwdriver_taken");
 				return "You pick up the |screwdriver| and slip it into your pocket.";
 			else:
 				return "You already took the |screwdriver|.";

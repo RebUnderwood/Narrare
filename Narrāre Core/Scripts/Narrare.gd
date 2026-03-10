@@ -98,6 +98,7 @@ func save(save_name: String = "-----") -> int:
 	var save_dict: Dictionary = {
 		"save_name": save_name,
 		"save_time": Time.get_unix_time_from_system(),
+		"current_map": map_manager.current_map_key,
 		"current_room": map.current_room.room_name,
 		"previous_text_displayed": previous_text_displayed,
 		"data": Data.to_dict(),
@@ -159,13 +160,13 @@ func load_save(save_number: String) -> Dictionary:
 					print("JSON Parse Error: ", json.get_error_message(), " at line ", json.get_error_line());
 					return {"err": ERR_INVALID_DATA, "out": out_str};
 				var save_data = json.data;
-				if !save_data.has("data") || !save_data.has("save_name") || !save_data.has("current_room") || !save_data.has("global_interactables") || !save_data.has("restricted_commands"):
-					return {"err": ERR_INVALID_DATA, "out": out_str};
-				if map.set_current_room_by_name(save_data.current_room) != OK:
+				if !save_data.has("data") || !save_data.has("save_name") || !save_data.has("current_map") || !save_data.has("current_room") || !save_data.has("global_interactables") || !save_data.has("restricted_commands"):
 					return {"err": ERR_INVALID_DATA, "out": out_str};
 				Data.from_dict(save_data.data);
 				Interactables.set_global_interactables(Array(save_data.global_interactables, TYPE_STRING, "", null));
 				Commands.set_restricted_commands(Array(save_data.restricted_commands, TYPE_STRING, "", null));
+				if map_manager.load_map(save_data.current_map, save_data.current_room) != OK:
+					return {"err": ERR_INVALID_DATA, "out": out_str};
 				out_str = "Loaded save %s: %s\n\n" % [save_number, save_data.save_name.replace_char('-'.unicode_at(0), ' '.unicode_at(0))];
 				if save_data.has("previous_text_displayed"):
 					out_str += save_data.previous_text_displayed;
@@ -176,4 +177,5 @@ func load_save(save_number: String) -> Dictionary:
 		else:
 			data_saved = true;
 	loaded_game.emit();
+	clear();
 	return {"err": OK, "out": out_str};

@@ -20,6 +20,7 @@ var exit_down: Exit = null;
 var room_states: Dictionary[Variant, RoomState] = {
 	null: RoomState.new()
 }
+var state_change_triggers: Array[Callable] = [];
 
 func _ready() -> void:
 	_register_exits();
@@ -93,18 +94,20 @@ func _register_exits() -> void:
 				_:
 					pass;
 
-func get_current_state() -> RoomState:
-	return room_states[current_state];
-	
-func add_state(state_identifier: Variant) -> RoomState:
-	room_states[state_identifier] = RoomState.new();
-	return room_states[state_identifier];
-	
 func get_state(state_identifier: Variant) -> RoomState:
 	return room_states[state_identifier];
 	
-func set_current_state(state_identifier: Variant) -> void:
+func get_current_state() -> RoomState:
+	return room_states[current_state];
+
+func add_state(state_identifier: Variant) -> RoomState:
+	room_states[state_identifier] = RoomState.new();
+	return room_states[state_identifier];
+
+func set_state(state_identifier: Variant) -> void:
 	current_state = state_identifier;
+	for trigger in state_change_triggers:
+		trigger.call(state_identifier);
 
 func add_interactables(...in_interactables: Array) -> void:
 	get_current_state().add_interactables.callv(in_interactables);
@@ -121,6 +124,7 @@ func enter_trigger() -> void:
 func exit_trigger() -> void:
 	get_current_state().exit_trigger()
 	
-	
+func add_state_change_trigger(trigger: Callable) -> void:
+	state_change_triggers.push_back(trigger);
 	
 	

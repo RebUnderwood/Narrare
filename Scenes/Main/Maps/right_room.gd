@@ -3,11 +3,11 @@ extends Room
 var lamp = Interactable.new("lamp")\
 	.add_synonyms("light", "desk lamp", "lamp base", "lamp's base", "base of the lamp")\
 	.add_interaction("look", (
-		func ():
+		func():
 			if Data.lamp_on:
-				return "The |lamp| is on. You can use 'use' to switch it off. The bottom of the |lamp| is held on by screws.";
+				return "The |lamp| is on. The bottom of the |lamp| is held on by screws.";
 			else:
-				return "The |lamp| is off. You can use 'use' to switch it on. The bottom of the |lamp| is held on by screws.";
+				return "The |lamp| is off. The bottom of the |lamp| is held on by screws.";
 			))\
 	.add_interaction("use", (
 		func (used_with: String) -> String: 
@@ -21,29 +21,29 @@ var lamp = Interactable.new("lamp")\
 				"":
 					if Data.lamp_on: 
 						Data.lamp_on = false;
-						set_current_state("lamp_off");
+						set_state("lamp_off");
 						return "You switch the |lamp| off.";
 					else:
 						Data.lamp_on = true;
-						set_current_state("lamp_on");
+						set_state("lamp_on");
 						return "You switch the |lamp| on.";
 				_:
 					return "You're not sure how to use the |lamp| with that.'";
 			))\
 		.add_command(Command.new("switch on", "^((?:(?:turn|switch) on?(?: the)?(?: lamp| light| desk lamp))|(?:(?:turn|switch)(?: the)?(?: lamp| light| desk lamp) on))$", (
-			func(interactables: InteractablesInterface, matches: RegExMatch) -> String:
+			func(_interactables: InteractablesInterface, _matches: RegExMatch) -> String:
 				if !Data.lamp_on: 
 					Data.lamp_on = true;
-					set_current_state("lamp_on");
+					set_state("lamp_on");
 					return "You switch the |lamp| on.";
 				else:
 					return "The |lamp| is already on!";
 				)))\
 		.add_command(Command.new("switch off", "^((?:(?:turn|switch) off?(?: the)?(?: lamp| light| desk lamp))|(?:(?:turn|switch)(?: the)?(?: lamp| light| desk lamp) off))$", (
-			func(interactables: InteractablesInterface, matches: RegExMatch) -> String:
+			func(_interactables: InteractablesInterface, _matches: RegExMatch) -> String:
 				if Data.lamp_on: 
 					Data.lamp_on = false;
-					set_current_state("lamp_off");
+					set_state("lamp_off");
 					return "You switch the |lamp| off.";
 				else:
 					return "The |lamp| is already off!";
@@ -71,7 +71,7 @@ var piece_of_paper = Interactable.new("piece of paper")\
 	.add_basic_interaction("look", "It says, 'Monkeys always look'.")\
 	.add_interaction_synonym("read", "look");
 
-var sign = Interactable.new("sign")\
+var wall_sign = Interactable.new("sign")\
 	.add_basic_interaction("look", "It says, 'Welcome to the Right Room!'")\
 	.add_interaction_synonym("read", "look");
 
@@ -81,7 +81,7 @@ func _ready() -> void:
 		.add_interactables(
 			lamp,
 			piece_of_paper,
-			sign,
+			wall_sign,
 		);
 	super(); # We put the super call *after* the initial state is defined when using an initial state.
 	add_state("lamp_on")\
@@ -89,5 +89,7 @@ func _ready() -> void:
 		.add_interactables(
 			lamp,
 			piece_of_paper,
-			sign,
+			wall_sign,
 		);
+	if Data.lamp_on:
+		set_state("lamp_on");
