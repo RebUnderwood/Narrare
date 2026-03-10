@@ -268,6 +268,23 @@ var use_callable: Callable = (
 		);	
 var use_command = Command.new("use", "^use(?: (?:the|an|a))? (?'use_group'.+)(?'has_on' on(?: (?:the|an|a))? ?)(?'on_group'.+)?|use(?: (?:the|an|a))? ?(?'use_single_group'.+)?", use_callable);
 
+var read_callable: Callable = (
+	func(interactables: InteractablesInterface, matches: RegExMatch) -> String:
+		var out: String = ""
+		var read_object: String = matches.get_string("read_group");
+		if read_object.is_empty():
+			out = "Read what?";
+		else:
+			var result: Variant = interactables.attempt_interaction(read_object, "read");
+			if result == null:
+				out = "{name} isn't sure what {he's} supposed to be reading."
+			else:
+				out = result;
+				Narrare.previous_text_displayed = out;
+		return out;
+);
+var read_command = Command.new("read", "^read(?:(?: (?:the))? (?'read_group'.+))?", read_callable);
+
 var say_callable: Callable = (
 	func(interactables: InteractablesInterface, matches: RegExMatch) -> String:
 		var out: String = ""
@@ -396,6 +413,7 @@ func _ready() -> void:
 		down_command,
 		take_command,
 		use_command,
+		read_command,
 		say_command,
 		inventory_command,
 		save_command,

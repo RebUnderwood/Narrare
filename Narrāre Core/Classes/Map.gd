@@ -13,6 +13,9 @@ func set_current_room_by_name(room_name: String) -> Error:
 	else:
 		set_current_room(set_room);
 		return OK;
+		
+func get_current_room() -> Room:
+	return current_room;
 	
 func get_room_by_name(room_name: String) -> Room:
 	for room in get_children():
@@ -51,7 +54,7 @@ func navigate(direction: Narrare.Direction) -> Variant:
 	current_room = next_room;
 	current_room.enter_trigger();
 	var load_triggers: String = "";
-	for interactable in current_room.interactables:
+	for interactable in current_room.get_current_state().interactables:
 		var trigger_result: Variant = Narrare.collect_available_interactables().get_interactable(interactable).on_load_trigger.call();
 		if trigger_result != null:
 			load_triggers += trigger_result;

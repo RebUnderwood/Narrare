@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=12 format=3 uid="uid://dwt8vsu0pcwta"]
+[gd_resource type="Theme" format=3 uid="uid://dwt8vsu0pcwta"]
 
 [ext_resource type="FontFile" uid="uid://c57pp4wcq7e0u" path="res://Assets/Fonts/Space_Mono/SpaceMono-Bold.ttf" id="1_km7t0"]
 [ext_resource type="FontFile" uid="uid://b14gc0hpal0la" path="res://Assets/Fonts/Space_Mono/SpaceMono-BoldItalic.ttf" id="2_lo7la"]

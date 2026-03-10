@@ -10,7 +10,11 @@ func get_interactable(interactable_identifier: String) -> Interactable:
 		return _objs[interactable_identifier];
 		
 func get_all_interactables() -> Array[Interactable]:
-	return _objs.values();
+	var out_array: Array[Interactable] = [];
+	for interactable in _objs.values():
+		if !out_array.has(interactable):
+			out_array.push_back(interactable);
+	return out_array;
 	
 func add_interactable(in_interactable: Interactable) -> void:
 	for identifier in in_interactable.identifiers:

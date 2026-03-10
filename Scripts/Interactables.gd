@@ -31,32 +31,48 @@ extends InteractablesBase
 # will be overwritten.
 
 var screwdriver = Interactable.new("screwdriver")\
-	.add_synonyms("phillips-head", "phillips head")\
-	.add_basic_interaction("look", "It's a plain phillips head screwdriver.")\
-	.add_interaction("use", (
-		func (used_on: String) -> String: 
-			match used_on:
-				"lamp":
-					if !Data.lamp_unscrewed:
-						Data.lamp_unscrewed = true;
-						return "You unscrew the base of the [lamp] using the [screwdriver].\nInside was a [piece of paper].";
-					else:
-						return "You already unscrewed the [lamp].";
-				"":
-					return "The [screwdriver] needs to be used on something.";
-				_:
-					return "You're not sure how to use a [screwdriver] on that.'";
-					
-			))\
+	.add_synonyms("phillips-head", "phillips head", "phillips head screwdriver","phillips-head screwdriver")\
+	.add_basic_interaction("look", "It's a plain phillips head |screwdriver|.")\
 	.add_interaction("take", (
 		func() -> String:
 			if !Data.screwdriver_taken:
 				Data.screwdriver_taken = true;
 				Data.add_to_inventory("screwdriver");
-				return "You pick up the [screwdriver] and slip it into your pocket.";
+				Narrare.map.get_current_room().set_current_state("screwdriver_taken");
+				return "You pick up the |screwdriver| and slip it into your pocket.";
 			else:
-				return "You already took the screwdriver.";
-			));
+				return "You already took the |screwdriver|.";
+			))\
+	.add_command(Command.new("unscrew", "^unscrew(?:(?: (?:the))? (?'unscrew_group'.+))?", (
+		func(interactables: InteractablesInterface, matches: RegExMatch) -> String:
+			var out: String = ""
+			var unscrew_object: String = matches.get_string("unscrew_group");
+			if unscrew_object.is_empty():
+				out = "Unscrew what?";
+			else:
+				var result: Variant = interactables.attempt_interaction(unscrew_object, "unscrew");
+				if result == null:
+					out = "You're not sure how to unscrew that exactly."
+				else:
+					out = result;
+					Narrare.previous_text_displayed = out;
+			return out;
+			)))\
+	.add_command(Command.new("screw in", "^screw(?: in)?(?:(?: (?:the))? (?'screw_group'.+))?", (
+		func(interactables: InteractablesInterface, matches: RegExMatch) -> String:
+			var out: String = ""
+			var screw_object: String = matches.get_string("screw_group");
+			if screw_object.is_empty():
+				out = "Screw in what?";
+			else:
+				var result: Variant = interactables.attempt_interaction(screw_object, "screw");
+				if result == null:
+					out = "You're not sure how to screw that in exactly."
+				else:
+					out = result;
+					Narrare.previous_text_displayed = out;
+			return out;
+			)))
 
 func _ready() -> void:
 	add_interactables([

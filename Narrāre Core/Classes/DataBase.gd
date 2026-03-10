@@ -12,6 +12,9 @@ func remove_from_inventory(item_name: String) -> bool:
 func get_inventory() -> PackedStringArray:
 	return player_inventory;
 	
+func clear_inventory() -> void:
+	player_inventory.clear()
+	
 func has_in_inventory(identifier: String) -> bool:
 	return player_inventory.has(identifier);
 	

@@ -52,7 +52,12 @@ func parse_command(input_string: String) -> String:
 	#Commands
 	else:
 		input_string = input_string.to_lower();
-		for command in command_stack:
+		var temp_command_stack = []
+		for interactable in interactables.get_all_interactables():
+			if interactable.interactable_specific_commands.size() > 0 && !interactable.is_hidden():
+				temp_command_stack.append_array(interactable.interactable_specific_commands);
+		temp_command_stack.append_array(command_stack);
+		for command in temp_command_stack:
 			var result: Variant = command.attempt_match_execute(input_string, interactables, _restricted_commands);
 			if result == null:
 				continue;

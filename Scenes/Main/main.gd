@@ -1,7 +1,7 @@
 extends Control
 
 @onready var interface = $Interface;
-@onready var map = $Map;
+@onready var map_manager = $MapManager;
 
 @export var fullscreen = false
 
@@ -17,7 +17,7 @@ func _ready() -> void:
 			return out;
 			);
 	Narrare.current_input_request = InputRequest.new(name_input_request_question, name_input_request_callable);
-	_write_to_interface(Narrare.current_input_request.get_display_string());
+	Narrare.say(Narrare.current_input_request.get_display_string());
 
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("toggle_fullscreen"):
@@ -36,7 +36,7 @@ func _clear_interface() -> void:
 
 func _parse_command(command: String) -> void:
 	var output: String = Commands.parse_command(command);
-	_write_to_interface(output);
+	Narrare.say(output);
 
 # === Signals ===
 func _on_something_says(message: String) -> void:

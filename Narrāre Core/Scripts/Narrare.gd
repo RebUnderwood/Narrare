@@ -17,6 +17,7 @@ signal input_request_changed(is_input_request: bool);
 signal loaded_game();
 signal game_over();
 
+var map_manager: MapManager;
 var map: Map;
 var previous_text_displayed: String = "";
 var data_saved: bool = true;
@@ -28,9 +29,10 @@ var current_input_request: InputRequest = null:
 	set(val):
 		current_input_request = val;
 		input_request_changed.emit(val != null);
+var text_transformers: Array = [];
 
 func say(message: String) -> void:
-	say_something.emit(message);
+	say_something.emit(run_text_transformers(message));
 	
 func clear() -> void:
 	clear_output.emit();
@@ -47,15 +49,18 @@ func enable_input() -> void:
 func set_map(in_map: Map) -> void:
 	map = in_map;
 	
+func set_map_manager(in_manager: MapManager) -> void:
+	map_manager = in_manager;
+	
 func collect_available_interactables() -> InteractablesInterface:
 	var interactables: InteractablesInterface = InteractablesInterface.new();
-	for interactable_name in Narrare.map.current_room.interactables:
+	for interactable_name in Narrare.map.current_room.get_current_state().interactables:
 		var interactable = Interactables.get_interactable(interactable_name);
 		
 		if interactable != null:
 			interactables.add_interactable(interactable);
 		else:
-			var room_interactable = Narrare.map.current_room.room_interactables.get_interactable(interactable_name);
+			var room_interactable = Narrare.map.current_room.get_current_state().room_interactables.get_interactable(interactable_name);
 			if room_interactable != null:
 				interactables.add_interactable(room_interactable);
 	for interactable_name in Data.player_inventory:
@@ -70,6 +75,16 @@ func collect_available_interactables() -> InteractablesInterface:
 	
 func trigger_game_over() -> void:
 	game_over.emit();
+	
+func register_text_transformers(...transformers: Array) -> Array:
+	text_transformers.append_array(transformers);
+	return text_transformers;
+	
+func run_text_transformers(in_text: String) -> String:
+	var out_text = in_text;
+	for transformer in text_transformers:
+		out_text = transformer.call(out_text);
+	return out_text;
 
 # === Saving and Loading ===
 func save(save_name: String = "-----") -> int:

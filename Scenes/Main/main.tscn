@@ -1,13 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://dnhdxkivwfu8v"]
+[gd_scene format=3 uid="uid://dnhdxkivwfu8v"]
 
 [ext_resource type="Script" uid="uid://dk3uenygqost6" path="res://Scenes/Main/main.gd" id="1_p6jpk"]
 [ext_resource type="PackedScene" uid="uid://4npa5poqhdvt" path="res://Scenes/Interface/interface.tscn" id="2_2a143"]
-[ext_resource type="Script" uid="uid://wv2nu42wmy7l" path="res://Narrāre Core/Classes/Map.gd" id="3_xlvfx"]
-[ext_resource type="Script" uid="uid://brf6yqjtycqg8" path="res://Scenes/Rooms/left_room.gd" id="4_y3v7k"]
-[ext_resource type="Script" uid="uid://byge00n556y55" path="res://Narrāre Core/Classes/Exit.gd" id="5_2a143"]
-[ext_resource type="Script" uid="uid://bfgpn7483aoto" path="res://Scenes/Rooms/right_room.gd" id="5_hryqi"]
+[ext_resource type="Script" uid="uid://bfxrq6huy3gd0" path="res://Narrāre Core/Classes/MapManager.gd" id="3_y3v7k"]
+[ext_resource type="PackedScene" uid="uid://cfdklomelgg0" path="res://Scenes/Main/Maps/main_map.tscn" id="4_5yls4"]
 
-[node name="Main" type="Control"]
+[node name="Main" type="Control" unique_id=1507402382]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,35 +14,17 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_p6jpk")
 
-[node name="Interface" parent="." instance=ExtResource("2_2a143")]
+[node name="Interface" parent="." unique_id=633163663 instance=ExtResource("2_2a143")]
 layout_mode = 1
 
-[node name="Map" type="Node" parent="." node_paths=PackedStringArray("current_room")]
-script = ExtResource("3_xlvfx")
-current_room = NodePath("LeftRoom")
+[node name="MapManager" type="Node" parent="." unique_id=239528150]
+script = ExtResource("3_y3v7k")
+default_map_id = "Main Map"
+map_dict = Dictionary[String, Resource]({
+"Main Map": ExtResource("4_5yls4")
+})
+metadata/_custom_type_script = "uid://bfxrq6huy3gd0"
 
-[node name="LeftRoom" type="Node" parent="Map"]
-script = ExtResource("4_y3v7k")
-room_name = "Left Room"
-entry_description = "You are now in the Left Room."
-
-[node name="ExitToRightRoom" type="Node" parent="Map/LeftRoom" node_paths=PackedStringArray("leads_to")]
-script = ExtResource("5_2a143")
-direction = 7
-leads_to = NodePath("../../RightRoom/ExitToLeftRoom")
-on_enter_description = "You head through the door."
-metadata/_custom_type_script = "uid://byge00n556y55"
-
-[node name="RightRoom" type="Node" parent="Map"]
-script = ExtResource("5_hryqi")
-room_name = "Right Room"
-entry_description = "You are now in the Right Room."
-
-[node name="ExitToLeftRoom" type="Node" parent="Map/RightRoom" node_paths=PackedStringArray("leads_to")]
-script = ExtResource("5_2a143")
-direction = 3
-leads_to = NodePath("../../LeftRoom/ExitToRightRoom")
-on_enter_description = "You head through the door."
-metadata/_custom_type_script = "uid://byge00n556y55"
+[node name="MainMap" parent="MapManager" unique_id=1070320875 instance=ExtResource("4_5yls4")]
 
 [connection signal="command_inputted" from="Interface" to="." method="_on_interface_command_inputted"]
