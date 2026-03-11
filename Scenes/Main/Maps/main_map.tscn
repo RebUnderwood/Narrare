@@ -7,12 +7,13 @@
 
 [node name="MainMap" type="Node" unique_id=1070320875 node_paths=PackedStringArray("current_room")]
 script = ExtResource("1_2giru")
+map_name = "Mysterious House"
 current_room = NodePath("LeftRoom")
 
 [node name="LeftRoom" type="Node" parent="." unique_id=645149984]
 script = ExtResource("2_rpnde")
 room_name = "Left Room"
-look_description = "There is an echo in here. There is a |sign| on the wall. Sitting on a table in the corner is a |screwdriver|. A door to the east leads to the Right Room.reb"
+look_description = "There is an echo in here. There is a |sign| on the wall. Sitting on a table in the corner is a |screwdriver|. A door to the east leads to the Right Room."
 entry_description = "You are now in the Left Room."
 
 [node name="ExitToRightRoom" type="Node" parent="LeftRoom" unique_id=1650586580 node_paths=PackedStringArray("leads_to")]

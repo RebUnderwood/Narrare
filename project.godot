@@ -23,6 +23,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+NarrareSettings="*uid://dgbon7im132ex"
 Narrare="*res://Narrāre Core/Scripts/Narrare.gd"
 Data="*res://Scripts/Data.gd"
 Interactables="*res://Scripts/Interactables.gd"

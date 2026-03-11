@@ -38,6 +38,16 @@ content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vb07h"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.13333334, 0.13333334, 0.13333334, 1)
+border_width_bottom = 1
+border_color = Color(0.5019608, 0.5019608, 0.5019608, 1)
+corner_detail = 1
+
 [resource]
 Label/fonts/font = ExtResource("4_vb07h")
 Label/styles/normal = SubResource("StyleBoxEmpty_fljde")
@@ -56,3 +66,5 @@ RichTextLabel/fonts/mono_font = ExtResource("4_vb07h")
 RichTextLabel/fonts/normal_font = ExtResource("4_vb07h")
 RichTextLabel/styles/focus = SubResource("StyleBoxFlat_fljde")
 RichTextLabel/styles/normal = SubResource("StyleBoxEmpty_dqlc5")
+TopBar/base_type = &"PanelContainer"
+TopBar/styles/panel = SubResource("StyleBoxFlat_vb07h")

@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://4npa5poqhdvt"]
+[gd_scene format=3 uid="uid://4npa5poqhdvt"]
 
 [ext_resource type="Script" uid="uid://g804pwf2hp6p" path="res://Scenes/Interface/interface.gd" id="1_j00uw"]
 [ext_resource type="Theme" uid="uid://dwt8vsu0pcwta" path="res://Themes/interface.tres" id="5_dukh4"]
 
-[node name="Interface" type="PanelContainer"]
+[node name="Interface" type="PanelContainer" unique_id=1127241493]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -14,10 +14,38 @@ size_flags_vertical = 3
 theme = ExtResource("5_dukh4")
 script = ExtResource("1_j00uw")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=251503326]
 layout_mode = 2
 
-[node name="TextOutput" type="RichTextLabel" parent="VBoxContainer"]
+[node name="TopBar" type="PanelContainer" parent="VBoxContainer" unique_id=1468095897]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme = ExtResource("5_dukh4")
+theme_type_variation = &"TopBar"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TopBar" unique_id=268992155]
+layout_mode = 2
+
+[node name="MainLabel" type="Label" parent="VBoxContainer/TopBar/HBoxContainer" unique_id=1212965131]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("5_dukh4")
+text = "Nowhere"
+vertical_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/TopBar/HBoxContainer" unique_id=1236236655]
+layout_mode = 2
+
+[node name="SideLabel" type="Label" parent="VBoxContainer/TopBar/HBoxContainer" unique_id=426448185]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 1
+theme = ExtResource("5_dukh4")
+text = "Nowhen"
+vertical_alignment = 1
+
+[node name="TextOutput" type="RichTextLabel" parent="VBoxContainer" unique_id=854739139]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 2
@@ -27,7 +55,7 @@ scroll_following = true
 selection_enabled = true
 visible_characters = 0
 
-[node name="CommandInput" type="LineEdit" parent="VBoxContainer"]
+[node name="CommandInput" type="LineEdit" parent="VBoxContainer" unique_id=552491756]
 layout_mode = 2
 theme = ExtResource("5_dukh4")
 placeholder_text = "Type 'help' for a list of commands."
@@ -36,7 +64,7 @@ context_menu_enabled = false
 deselect_on_focus_loss_enabled = false
 caret_blink = true
 
-[node name="Label" type="Label" parent="VBoxContainer/CommandInput"]
+[node name="Label" type="Label" parent="VBoxContainer/CommandInput" unique_id=1582372320]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0

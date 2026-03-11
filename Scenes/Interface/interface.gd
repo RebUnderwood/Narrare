@@ -4,6 +4,8 @@ signal command_inputted(command: String);
 
 @onready var text_output = $VBoxContainer/TextOutput;
 @onready var command_input = $VBoxContainer/CommandInput;
+@onready var top_main_label = $VBoxContainer/TopBar/HBoxContainer/MainLabel;
+@onready var top_side_label = $VBoxContainer/TopBar/HBoxContainer/SideLabel;
 
 @export var use_typewriter_effect: bool = true;
 @export var command_history_max_length: int = 15;
@@ -16,6 +18,7 @@ var command_history_index: int = -1;
 func _ready() -> void:
 	Narrare.prompt_changed.connect(_on_prompt_changed);
 	Narrare.input_request_changed.connect(_on_input_request_changed);
+	Narrare.request_set_topbar.connect(on_top_bar_change_requested);
 	command_input.placeholder_text = input_placeholder_text;
 	_focus_command_input();
 	
@@ -106,6 +109,11 @@ func _on_input_request_changed(is_input_request: bool) -> void:
 	else:
 		command_input.placeholder_text = input_placeholder_text;
 
-
 func _on_command_input_text_changed(new_text: String) -> void:
 	Narrare.input_text_changed.emit(new_text);
+	
+func on_top_bar_change_requested(main_text: Variant, side_text: Variant) -> void:
+	if main_text is String:
+		top_main_label.text = main_text;
+	if side_text is String:
+		top_side_label.text = side_text;

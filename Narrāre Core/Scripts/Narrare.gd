@@ -4,6 +4,7 @@ enum Direction {NONE, NORTH, NORTHWEST, WEST, SOUTHWEST, SOUTH, SOUTHEAST, EAST,
 
 signal say_something(message: String);
 signal input_something(message: String, clear: bool);
+signal request_set_topbar(main_text: Variant, side_text: Variant);
 signal set_enable_input(enable: bool);
 signal clear_output;
 @warning_ignore("unused_signal")
@@ -45,6 +46,9 @@ func disable_input() -> void:
 	
 func enable_input() -> void:
 	set_enable_input.emit(true);
+	
+func set_topbar(main_text: Variant, side_text: Variant = null) -> void:
+	request_set_topbar.emit(main_text, side_text);
 	
 func set_map(in_map: Map) -> void:
 	map = in_map;

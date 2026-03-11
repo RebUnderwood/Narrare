@@ -22,5 +22,7 @@ func load_map(map_name: String, room_name: Variant = null) -> Error:
 		current_map_key = map_name;
 		if room_name is String:
 			current_map.set_current_room_by_name(room_name);
+		if NarrareSettings.AUTO_SET_TOPBAR_ON_LOCATION_CHANGE:
+			Narrare.set_topbar(current_map.map_name + " - " + current_map.get_current_room().room_name);
 		return OK;
 	return FAILED;

@@ -1,10 +1,13 @@
 extends Node
 class_name Map
 
+@export var map_name: String = "";
 @export var current_room: Room = null;
 
 func set_current_room(in_room: Room) -> void:
 	current_room = in_room;
+	if NarrareSettings.AUTO_SET_TOPBAR_ON_LOCATION_CHANGE:
+		Narrare.set_topbar(map_name + " - " + current_room.room_name);
 	
 func set_current_room_by_name(room_name: String) -> Error:
 	var set_room: Room = get_room_by_name(room_name);
@@ -58,6 +61,8 @@ func navigate(direction: Narrare.Direction) -> Variant:
 		var trigger_result: Variant = Narrare.collect_available_interactables().get_interactable(interactable).on_load_trigger.call();
 		if trigger_result != null:
 			load_triggers += trigger_result;
+	if NarrareSettings.AUTO_SET_TOPBAR_ON_LOCATION_CHANGE:
+		Narrare.set_topbar(map_name + " - " + current_room.room_name);
 	return describe_navigation(next_exit, next_entrance, current_room, load_triggers);
 	
 func get_room_description(in_room: Room = current_room) -> String:
